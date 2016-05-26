@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@drawable/bg_main"
+    android:layout_height="match_parent">
+
+    <GridLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:id="@+id/gridLayout"
+        android:layout_above="@+id/linearLayout"
+        >
+        <TextView
+            android:text="Time:"
+            android:layout_width="wrap_content"
+            android:layout_gravity="start"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="---"
+            android:id="@+id/tvTime"
+            android:textColor="@android:color/white" />
+        <TextView
+            android:text="Previous Date:"
+            android:layout_width="wrap_content"
+            android:layout_gravity="start"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="---"
+            android:id="@+id/tvPrevDate"
+            android:textColor="@android:color/white" />
+        <TextView
+            android:text="Previous Reading:"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="---"
+            android:id="@+id/tvPrevReading"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="Next Date:"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="---"
+            android:id="@+id/tvNextDate"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="Next Reading:"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="---"
+            android:id="@+id/tvNextReading"
+            android:textColor="@android:color/white"
+            />
+
+        <TextView
+            android:text="Price:"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="---"
+            android:id="@+id/tvPrice"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="Calculation String:"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:text="---"
+            android:id="@+id/tvCalcString"
+            android:textColor="@android:color/white"
+            />
+
+    </GridLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+</LinearLayout>
