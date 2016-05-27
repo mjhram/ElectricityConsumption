@@ -11,71 +11,106 @@
         android:id="@+id/gridLayout"
         android:layout_above="@+id/linearLayout"
         >
-        <TextView
-            android:text="Time:"
-            android:layout_width="wrap_content"
-            android:layout_gravity="start"
-            android:textColor="@android:color/white"
-            />
+
         <TextView
             android:text="---"
             android:id="@+id/tvTime"
-            android:textColor="@android:color/white" />
-        <TextView
-            android:text="Previous Date:"
-            android:layout_width="wrap_content"
-            android:layout_gravity="start"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
             />
+        <TextView
+            android:id="@+id/tvTimeInfo"
+            android:text="الوقت:"
+            android:layout_width="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
+            />
+
         <TextView
             android:text="---"
             android:id="@+id/tvPrevDate"
-            android:textColor="@android:color/white" />
-        <TextView
-            android:text="Previous Reading:"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
             />
+        <TextView
+            android:text="تاريخ القراءة السابقة:"
+            android:layout_width="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
+            />
+
         <TextView
             android:text="---"
             android:id="@+id/tvPrevReading"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
             />
         <TextView
-            android:text="Next Date:"
+            android:text="القراءة السابقة:"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
             />
+
         <TextView
             android:text="---"
             android:id="@+id/tvNextDate"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
             />
         <TextView
-            android:text="Next Reading:"
+            android:text="تاريخ القراءة اللاحقة:"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
             />
+
         <TextView
             android:text="---"
             android:id="@+id/tvNextReading"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            />
+        <TextView
+            android:text="القراءة اللاحقة:"
+            android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
             />
 
-        <TextView
-            android:text="Price:"
-            android:textColor="@android:color/white"
-            />
         <TextView
             android:text="---"
             android:id="@+id/tvPrice"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
             />
         <TextView
-            android:text="Calculation String:"
+            android:text="المبلغ:"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
             />
+
         <TextView
             android:text="---"
             android:id="@+id/tvCalcString"
             android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            />
+        <TextView
+            android:text="الية حساب المبلغ:"
+            android:textColor="@android:color/white"
+            android:layout_gravity="right"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
             />
 
     </GridLayout>

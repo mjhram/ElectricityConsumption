@@ -81,6 +81,7 @@
                 android:layout_toRightOf="@+id/textView3"
                 android:layout_toEndOf="@+id/textView3"
                 android:layout_gravity="right"
+                android:gravity="right"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -164,6 +165,7 @@
                 android:layout_toRightOf="@+id/textView6"
                 android:layout_toEndOf="@+id/textView6"
                 android:layout_gravity="right"
+                android:gravity="right"
                 />
 
             <TextView
