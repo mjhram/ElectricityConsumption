@@ -16,8 +16,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
+
 import java.util.Calendar;
+
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
     static TextView selectedDateView, prevDateTextView, nextDateTextView,
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCalculateClicked(View v) {
         double price = getPrice();
-        priceTextView.setText(String.valueOf(price));
+        priceTextView.setText(String.format("%.0f",price));
         calcTextView.setText(calculationStr);
 
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         eInfo.nextDateInMilliSec = nextDate;
         eInfo.prevReading = Long.parseLong(prevReadTextEdit.getText().toString());
         eInfo.nextReading = Long.parseLong(nextReadTextEdit.getText().toString());
-        eInfo.price = String.format("%.2f",getPrice());
+        eInfo.price = String.format("%.0f",getPrice());
         eInfo.calculationString = calculationStr;
         dbHandler.addRecord(eInfo);
     }
