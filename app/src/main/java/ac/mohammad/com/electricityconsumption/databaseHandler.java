@@ -16,7 +16,7 @@ public class databaseHandler extends SQLiteOpenHelper {
         // All Static variables
         // Database
         private static final int DATABASE_VERSION = 1;
-        private static final String DATABASE_NAME = "elecReadings.db";
+        public static final String DATABASE_NAME = "elecReadings.db";
 
         // Contacts table name
         public static final String TABLE_Units = "elecUnits";

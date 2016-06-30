@@ -10,10 +10,18 @@
     android:orientation="vertical"
     tools:context="ac.mohammad.com.electricityconsumption.MainActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:fillViewport="true"
+        android:layout_above="@+id/layout1"
+        >
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="right"
         >
 
@@ -236,12 +244,14 @@
             android:paddingEnd="10dp"
             />
     </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:id="@+id/layout1"
         >
 
         <LinearLayout
@@ -259,7 +269,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:onClick="onCalculateClicked"
-                android:textSize="30dp"
+                android:textSize="24dp"
                 />
             <Button
                 android:layout_width="0dp"
@@ -272,7 +282,7 @@
                 android:layout_toEndOf="@+id/buttonCalculate"
                 android:layout_alignParentRight="true"
                 android:onClick="onSaveClicked"
-                android:textSize="30dp"
+                android:textSize="24dp"
                 />
 
         </LinearLayout>
@@ -284,8 +294,35 @@
             android:id="@+id/history"
             android:layout_alignParentLeft="true"
             android:onClick="onHistoryClicked"
-            android:textSize="30dp"
+            android:textSize="24dp"
             />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="نقل البيانات"
+                    android:id="@+id/btn_export"
+                    android:layout_alignParentLeft="true"
+                    android:onClick="onExportClicked"
+                    android:textSize="24dp"
+                    />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="جلب البيانات"
+                    android:id="@+id/btn_import"
+                    android:layout_alignParentLeft="true"
+                    android:onClick="onImportClicked"
+                    android:textSize="24dp"
+                    />
+            </LinearLayout>
 
     </LinearLayout>
 

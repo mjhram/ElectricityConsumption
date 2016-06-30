@@ -128,7 +128,6 @@ class MyInfoArrayAdapter extends ArrayAdapter<elec_info> {
 
         return date;
     }
-
 }
 
 

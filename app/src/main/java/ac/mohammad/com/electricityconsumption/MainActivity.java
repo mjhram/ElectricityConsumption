@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +15,15 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.Calendar;
 
 import io.fabric.sdk.android.Fabric;
@@ -203,5 +210,57 @@ public class MainActivity extends AppCompatActivity {
         month++;
         dateView.setText(new StringBuilder().append(day).append("/")
                 .append(month).append("/").append(year));
+    }
+    public void onImportClicked(View v) {
+        importDB();
+    }
+
+    private void importDB(){
+        File sd = Environment.getExternalStorageDirectory();
+        File data = Environment.getDataDirectory();
+        FileChannel source=null;
+        FileChannel destination=null;
+        String tmp = this.getPackageName();
+        String currentDBPath = "/data/"+ tmp +"/databases/"+databaseHandler.DATABASE_NAME;
+        String backupDBPath = databaseHandler.DATABASE_NAME;
+        File currentDB = new File(data, currentDBPath);
+        File backupDB = new File(sd, backupDBPath);
+        try {
+            source = new FileInputStream(backupDB).getChannel();
+            destination = new FileOutputStream(currentDB).getChannel();
+            long s = source.size();
+            destination.transferFrom(source, 0, s);
+            source.close();
+            destination.close();
+            Toast.makeText(this, "DB Imported!", Toast.LENGTH_LONG).show();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onExportClicked(View v) {
+        exportDB();
+    }
+
+    private void exportDB(){
+        File sd = Environment.getExternalStorageDirectory();
+        File data = Environment.getDataDirectory();
+        FileChannel source=null;
+        FileChannel destination=null;
+        String tmp = this.getPackageName();
+        String currentDBPath = "/data/"+ tmp +"/databases/"+databaseHandler.DATABASE_NAME;
+        String backupDBPath = databaseHandler.DATABASE_NAME;
+        File currentDB = new File(data, currentDBPath);
+        File backupDB = new File(sd, backupDBPath);
+        try {
+            source = new FileInputStream(currentDB).getChannel();
+            destination = new FileOutputStream(backupDB).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+            Toast.makeText(this, "DB Exported!"+backupDB.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 }
