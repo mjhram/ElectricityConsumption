@@ -1,7 +1,6 @@
 package ac.mohammad.com.electricityconsumption;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.sql.Timestamp;
@@ -28,9 +28,11 @@ import java.util.TimeZone;
 }*/
 
 public class InfoListActivity extends ListActivity {
+    public databaseHandler dbHandler;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        databaseHandler dbHandler = new databaseHandler(this);
+        dbHandler = new databaseHandler(this);
         List<elec_info> values = dbHandler.getAllRecords();
         MyInfoArrayAdapter adapter = new MyInfoArrayAdapter(this, values);
         setListAdapter(adapter);
@@ -59,26 +61,36 @@ public class InfoListActivity extends ListActivity {
 }
 
 class MyInfoArrayAdapter extends ArrayAdapter<elec_info> {
-    private final Context context;
+    private final InfoListActivity theListActivity;
     private final List<elec_info> mobInfoArray;
 
-    public MyInfoArrayAdapter(Context context, List<elec_info> values) {
-        super(context, R.layout.info_row_layout, values);
-        this.context = context;
+    public MyInfoArrayAdapter(InfoListActivity aListActivity, List<elec_info> values) {
+        super(aListActivity, R.layout.info_row_layout, values);
+        this.theListActivity = aListActivity;
         this.mobInfoArray = values;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         TextView txt_tmp;
 
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) theListActivity
+                .getSystemService(theListActivity.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.info_row_layout, parent, false);
 
         showInfo(mobInfoArray.get(position), rowView);
+        Button delBtn = (Button) rowView.findViewById(R.id.btn_del);
 
-        return rowView;
+        delBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //do something
+                theListActivity.dbHandler.delRecord(mobInfoArray.get(position));
+                mobInfoArray.remove(position); //or some other task
+                notifyDataSetChanged();
+
+            }
+        });        return rowView;
     }
 
     private String getDateString(long msec) {
@@ -110,8 +122,8 @@ class MyInfoArrayAdapter extends ArrayAdapter<elec_info> {
         txt_tmp.setText(info.price);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvCalcString);
         txt_tmp.setText(info.calculationString);
-
-
+        txt_tmp = (TextView) rowView.findViewById(R.id.tvUnitsString);
+        txt_tmp.setText(String.format("%d", info.nextReading-info.prevReading));
     }
 
     private String getDate(String time) {

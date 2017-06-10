@@ -24,14 +24,14 @@ android {
             storePassword '123456'
         }
     }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "ac.mohammad.com.electricityconsumption"
         minSdkVersion 14
         targetSdkVersion 17
-        versionCode 1
-        versionName "1.0"
+        versionCode 15
+        versionName '1.5'
     }
     buildTypes {
         release {

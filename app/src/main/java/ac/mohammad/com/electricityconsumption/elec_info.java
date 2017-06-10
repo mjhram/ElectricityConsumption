@@ -12,6 +12,7 @@ import android.util.Log;
  */
 public class elec_info implements Parcelable {
     //private MainActivity theActivity;
+    public Long id;
     public String time;//used for sqliteDB timestamp
     public Long prevDateInMilliSec;
     public Long nextDateInMilliSec;
@@ -74,6 +75,7 @@ public class elec_info implements Parcelable {
     static public elec_info getInfoFromRow(Cursor in) {
         elec_info tmpMobInfo = new elec_info();
 
+        tmpMobInfo.id=in.getLong(in.getColumnIndex("No"));
         tmpMobInfo.time=in.getString(in.getColumnIndex("time"));
         tmpMobInfo.prevDateInMilliSec=in.getLong(in.getColumnIndex("prevDateInMilliSec"));
         tmpMobInfo.nextDateInMilliSec=in.getLong(in.getColumnIndex("nextDateInMilliSec"));

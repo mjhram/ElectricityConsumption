@@ -17,6 +17,7 @@ public class databaseHandler extends SQLiteOpenHelper {
         // Database
         private static final int DATABASE_VERSION = 1;
         public static final String DATABASE_NAME = "elecReadings.db";
+        private static final String KEY_ID = "No";
 
         // Contacts table name
         public static final String TABLE_Units = "elecUnits";
@@ -63,6 +64,26 @@ public class databaseHandler extends SQLiteOpenHelper {
             mobInfo.addRecord2db(db);
             db.close();
         }
+
+    // Deleting single Record
+    public void delRecord(elec_info eInfo) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryStr = "DELETE FROM " + TABLE_Units + " WHERE No = '"+eInfo.id+"'";
+        db.rawQuery(queryStr, null);
+        //c.moveToFirst();
+        //db.execSQL(queryStr);
+        /*String tmp = "No = "+eInfo.id;
+        int a = db.delete(TABLE_Units, tmp, null);
+        db.close();
+        int b = a;
+
+        int tmp = db.delete(TABLE_Units, KEY_ID + " = ?",
+                new String[] { String.valueOf(eInfo.id) });
+        db.close();
+        tmp +=1;
+        int a = tmp;
+        */
+    }
 
         // Getting All records
         public List<elec_info> getAllRecords() {

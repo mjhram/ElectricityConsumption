@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">استهلاك الكهرباء</string>
+    <string name="menu_history">عرض القراءات السابقة</string>
+    <string name="menu_export">نقل الييانات</string>
+    <string name="menu_import">جلب البيانات</string>
+
 </resources>

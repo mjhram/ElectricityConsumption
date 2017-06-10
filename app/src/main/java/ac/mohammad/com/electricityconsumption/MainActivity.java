@@ -11,6 +11,9 @@ import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -30,13 +33,39 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
     static TextView selectedDateView, prevDateTextView, nextDateTextView,
-            priceTextView, calcTextView;
+            priceTextView, calcTextView, textViewUnits, textViewPeriod;
     static long prevDate, nextDate;
     EditText prevReadTextEdit, nextReadTextEdit;
+    int unitsPerMonthX2016 = 1000;
     int unitsPerMonth = 500;
-    int price4units[] = {10, 20, 40, 80};
+    int price4units[] = {10, 10, 20, 40, 80, 80, 120, 120, 200};
     SharedPreferences sharedPref;
     databaseHandler dbHandler;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu_history:
+                onHistoryClicked(null);
+                return true;
+            case R.id.menu_export:
+                exportDB();
+                return true;
+            case R.id.menu_import:
+                importDB();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         prevDateTextView = (TextView) findViewById(R.id.textViewPrevDate);
         nextDateTextView = (TextView) findViewById(R.id.textViewNextDate);
+        textViewUnits = (TextView) findViewById(R.id.textViewUnits);
+        textViewPeriod = (TextView) findViewById(R.id.textViewPeriod);
         priceTextView = (TextView) findViewById(R.id.textViewPrice);
         calcTextView = (TextView) findViewById(R.id.textViewCalc);
         prevReadTextEdit = (EditText) findViewById(R.id.editTextPrevReading);
@@ -78,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onCalculateClicked(View v) {
-        double price = getPrice();
+        double price = getPrice(nextDate, prevDate);
         priceTextView.setText(String.format("%.0f",price));
         calcTextView.setText(calculationStr);
 
@@ -96,12 +127,12 @@ public class MainActivity extends AppCompatActivity {
         eInfo.nextDateInMilliSec = nextDate;
         eInfo.prevReading = Long.parseLong(prevReadTextEdit.getText().toString());
         eInfo.nextReading = Long.parseLong(nextReadTextEdit.getText().toString());
-        eInfo.price = String.format("%.0f",getPrice());
+        eInfo.price = String.format("%.0f",getPrice(nextDate, prevDate));
         eInfo.calculationString = calculationStr;
         dbHandler.addRecord(eInfo);
     }
 
-    public void onHistoryClicked(View v) {
+    public void onHistoryClicked(View aa) {
         if(dbHandler.getRecordsCount() !=0) {
             //local history instead of site history
             Intent myIntent = new Intent(MainActivity.this, InfoListActivity.class);
@@ -120,13 +151,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    static long get2016Jan1inMSec() {
+        final Calendar c = Calendar.getInstance();
+        c.set(2016, 0, 1);
+        long msec = c.getTimeInMillis();
+        return msec;
+    }
+
     String calculationStr = "";
-    private double getPrice() {
-        long periodInDays= (nextDate -prevDate)/(24*60*60*1000)+1;
+    private double getPrice(long nDate, long pDate) {
+        long periodInDays= (nDate -pDate)/(24*60*60*1000);
         int     prevReading = Integer.parseInt(prevReadTextEdit.getText().toString());
         int     nextReading = Integer.parseInt(nextReadTextEdit.getText().toString());
         int readingDiff = nextReading - prevReading;
-        long unitsPerPeriod = Math.round(1.0 * unitsPerMonth * periodInDays / 30.0);
+        long unitsPerPeriod;
+
+        textViewUnits.setText(String.format("%d",readingDiff));
+        textViewPeriod.setText(String.format("%d",periodInDays));
+
+        if(nDate <= get2016Jan1inMSec()) {//nDate&pDate are before 2016-Jan-1
+            unitsPerPeriod = Math.round(1.0 * unitsPerMonthX2016 * periodInDays / 30.0);
+        } else if(pDate < get2016Jan1inMSec()){
+            unitsPerPeriod = Math.round(1.0 * unitsPerMonthX2016 * periodInDays / 30.0);
+        } else { //nDate&pDate are after 2016-Jan-1
+            unitsPerPeriod = Math.round(1.0 * unitsPerMonth * periodInDays / 30.0);
+        }
         double price = 0.0;
         int i = 0;
         calculationStr = "";
@@ -134,10 +183,17 @@ public class MainActivity extends AppCompatActivity {
             if(i>0) {
                 calculationStr += " + ";
             }
-            if (readingDiff >= unitsPerPeriod) {
-                price += unitsPerPeriod * price4units[i];
-                readingDiff -= unitsPerPeriod;
-                calculationStr += unitsPerPeriod + "x" + price4units[i];
+            double totalUnits = unitsPerPeriod;
+            //int totalPrice4Units=price4units[i];
+            while(i<price4units.length-1 && price4units[i]==price4units[i+1]){
+                totalUnits += unitsPerPeriod;
+                //totalPrice4Units+=price4units[i];
+                i++;
+            }
+            if (readingDiff >= totalUnits) {
+                price += totalUnits * price4units[i];
+                readingDiff -= totalUnits;
+                calculationStr += totalUnits + "x" + price4units[i];
             } else {
                 price += readingDiff * price4units[i];
                 calculationStr += readingDiff + "x" + price4units[i];
@@ -152,6 +208,14 @@ public class MainActivity extends AppCompatActivity {
         }
         return price;
     }
+
+    public void onMoveUpClicked(View v) {
+        prevReadTextEdit.setText(nextReadTextEdit.getText().toString());
+        prevDate = nextDate;
+        showDate(prevDateTextView, prevDate);
+
+    }
+
     public void onNextDateClicked(View v) {
         selectedDateView = nextDateTextView;
         DialogFragment newFragment = new DatePickerFragment();
