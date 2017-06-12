@@ -68,14 +68,14 @@ public class databaseHandler extends SQLiteOpenHelper {
     // Deleting single Record
     public void delRecord(elec_info eInfo) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String queryStr = "DELETE FROM " + TABLE_Units + " WHERE No = '"+eInfo.id+"'";
-        db.rawQuery(queryStr, null);
+        //String queryStr = "DELETE FROM " + TABLE_Units + " WHERE No = '"+eInfo.id+"'";
+        //db.rawQuery(queryStr, null);
         //c.moveToFirst();
         //db.execSQL(queryStr);
-        /*String tmp = "No = "+eInfo.id;
+        String tmp = "No=" + eInfo.id;
         int a = db.delete(TABLE_Units, tmp, null);
         db.close();
-        int b = a;
+        /*int b = a;
 
         int tmp = db.delete(TABLE_Units, KEY_ID + " = ?",
                 new String[] { String.valueOf(eInfo.id) });
