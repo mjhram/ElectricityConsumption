@@ -314,6 +314,20 @@
                 android:paddingRight="10dp"
                 android:paddingEnd="10dp"
                 />
+
+            <CheckBox
+                android:id="@+id/checkBoxSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="true"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:gravity="right"
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp"
+                android:text="خزن"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
         </LinearLayout>
     </ScrollView>
 
@@ -342,19 +356,20 @@
                 android:onClick="onCalculateClicked"
                 android:textSize="24dp"
                 />
+
             <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="خزن"
                 android:id="@+id/buttonSave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/buttonCalculate"
-                android:layout_toEndOf="@+id/buttonCalculate"
                 android:layout_alignParentRight="true"
+                android:layout_toEndOf="@+id/buttonCalculate"
+                android:layout_toRightOf="@+id/buttonCalculate"
+                android:layout_weight="1"
                 android:onClick="onSaveClicked"
+                android:text="خزن"
                 android:textSize="24dp"
-                />
+                android:visibility="gone" />
 
         </LinearLayout>
 

@@ -244,6 +244,7 @@
             android:layout_marginRight="10dp"
             android:text="ازالة القراءة"
             android:layout_columnSpan="2"
+            android:focusable="false"
             />
 
 

@@ -3,5 +3,9 @@
     <string name="menu_history">عرض القراءات السابقة</string>
     <string name="menu_export">نقل الييانات</string>
     <string name="menu_import">جلب البيانات</string>
-
+    <string name="menu_use">استخدم</string>
+    <string name="menu_order">ترتيب حسب...</string>
+    <string name="menu_orderbyprevdate">تاريخ القراءة</string>
+    <string name="menu_orderbysavedate">تاريخ تدوين القراءة</string>
+    <string name="menu_noorder">بدون ترتيب</string>
 </resources>

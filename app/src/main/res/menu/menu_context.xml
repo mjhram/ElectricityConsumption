@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_use"
+        android:title="@string/menu_use"
+        />
+    <item android:id="@+id/menu_orderby"
+        android:title="@string/menu_order">
+        <menu>
+            <item android:id="@+id/menu_orderbyprevdate"
+            android:title="@string/menu_orderbyprevdate">
+            </item>
+            <item android:id="@+id/menu_orderbysavedate"
+                android:title="@string/menu_orderbysavedate">
+            </item>
+            <item android:id="@+id/menu_none"
+                android:title="@string/menu_noorder">
+            </item>
+        </menu>
+    </item>
+</menu>

@@ -72,7 +72,7 @@ public class databaseHandler extends SQLiteOpenHelper {
         //db.rawQuery(queryStr, null);
         //c.moveToFirst();
         //db.execSQL(queryStr);
-        String tmp = "No=" + eInfo.id;
+        String tmp = "No = "+eInfo.id;
         int a = db.delete(TABLE_Units, tmp, null);
         db.close();
         /*int b = a;
@@ -86,10 +86,18 @@ public class databaseHandler extends SQLiteOpenHelper {
     }
 
         // Getting All records
-        public List<elec_info> getAllRecords() {
+        public List<elec_info> getAllRecords(SortType sortType) {
             List<elec_info> cInfoList = new ArrayList<elec_info>();
             // Select All Query
-            String selectQuery = "SELECT  * FROM " + TABLE_Units + " ORDER BY No DESC";
+            String orderStr ="";
+            if(sortType == SortType.PrevDate) {
+                orderStr = " ORDER BY prevDateInMilliSec DESC";
+            } else if(sortType == SortType.SaveDate) {
+                orderStr = " ORDER BY time DESC";
+            } else {
+                orderStr = " ORDER BY No DESC";
+            }
+            String selectQuery = "SELECT  * FROM " + TABLE_Units + orderStr;
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor cursor = db.rawQuery(selectQuery, null);
 

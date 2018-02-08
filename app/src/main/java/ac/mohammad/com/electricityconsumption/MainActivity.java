@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,18 +29,115 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
+    ArrayList<PriceModel> priceModels = new ArrayList<>();
+
+    public class PriceModelDateComparator implements Comparator<PriceModel>
+    {
+        public int compare(PriceModel left, PriceModel right) {
+            int res = (int)(right.appliedDate - left.appliedDate);
+            return res;
+        }
+    }
+    long getUnitsPerPeriod(long unitsInMonth, double periodInDays) {
+        long res = Math.round(1.0 * unitsInMonth * periodInDays / 30.0);
+        return res;
+    }
+
+    class PriceModel {
+        String description;
+        boolean applied; //used to indicate whether to include it in calc.
+        long appliedDate;
+        long pDate, nDate;  //prev & next dates
+        int prevReading, nextReading;
+        ArrayList<Integer> unitPerMonth;
+        ArrayList<Integer> pricePerUnit;
+
+        String calculationString;
+        double price;
+
+        PriceModel(String desc, long date, int[] units, int[] prices){
+            int arraySize = units.length;
+            if(units.length != prices.length) {
+                //should print error
+            }
+            description = desc;
+            appliedDate = date;
+            unitPerMonth = new ArrayList<Integer>();
+            pricePerUnit = new ArrayList<Integer>();
+            for (int i =0; i<arraySize; i++) {
+                unitPerMonth.add(units[i]);
+                pricePerUnit.add(prices[i]);
+            }
+        }
+        //String calculationStr
+        //nDate&pDate are in milliSec
+        public void getPrice(/*long pDate, long nDate, long prevReading, long nextReading*/) {
+            double periodInDays= 1.0 * (nDate - pDate)/(24*60*60*1000);
+            long readingDiff = nextReading - prevReading;
+            long unitsPerPeriod;
+
+            //textViewUnits.setText(String.format("%d",readingDiff));
+            //textViewPeriod.setText(String.format("%d",periodInDays));
+
+            /*if(nDate <= get2016Jan1inMSec()) {//nDate&pDate are before 2016-Jan-1
+                unitsPerPeriod = Math.round(1.0 * unitsPerMonthX2016 * periodInDays / 30.0);
+            } else if(pDate < get2016Jan1inMSec()){
+                unitsPerPeriod = Math.round(1.0 * unitsPerMonthX2016 * periodInDays / 30.0);
+            } else { //nDate&pDate are after 2016-Jan-1
+                unitsPerPeriod = Math.round(1.0 * unitsPerMonth * periodInDays / 30.0);
+            }*/
+            //double
+            price = 0.0;
+            //int i = 0;
+            calculationString = "";
+            for (int i=0; i<unitPerMonth.size() && readingDiff > 0; i++) {
+                if(i>0) {
+                    calculationString += " + ";
+                }
+                double totalUnits = getUnitsPerPeriod(unitPerMonth.get(i), periodInDays);//unitsPerPeriod;
+                //int totalPrice4Units=price4units[i];
+                /*while(i<price4units.length-1 && price4units[i]==price4units[i+1]){
+                    totalUnits += unitsPerPeriod;
+                    //totalPrice4Units+=price4units[i];
+                    i++;
+                }*/
+                if (readingDiff >= totalUnits) {
+                    price += totalUnits * pricePerUnit.get(i);
+                    readingDiff -= totalUnits;
+                    calculationString += totalUnits + "x" + pricePerUnit.get(i);
+                } else {
+                    price += readingDiff * pricePerUnit.get(i);
+                    calculationString += readingDiff + "x" + pricePerUnit.get(i);
+                    break;
+                }
+                //i++;
+                /* //All remaining units falls in last range
+                if(i == price4units.length-1 && readingDiff > 0) {
+                    price += readingDiff * price4units[i];
+                    calculationStr += " + " + readingDiff + "x" + price4units[i];
+                    break;
+                }*/
+            }
+            //return price;
+        }
+    }
+
     static TextView selectedDateView, prevDateTextView, nextDateTextView,
             priceTextView, calcTextView, textViewUnits, textViewPeriod;
+    static CheckBox saveCheckBox;
+    static Button btnCalc;
     static long prevDate, nextDate;
     EditText prevReadTextEdit, nextReadTextEdit;
-    int unitsPerMonthX2016 = 1000;
-    int unitsPerMonth = 500;
-    int price4units[] = {10, 10, 20, 40, 80, 80, 120, 120, 200};
+    //int unitsPerMonthX2016 = 1000;
+    //int unitsPerMonth = 500;
     SharedPreferences sharedPref;
     databaseHandler dbHandler;
 
@@ -76,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         dbHandler = new databaseHandler(this);
 
+        saveCheckBox = (CheckBox) findViewById(R.id.checkBoxSave);
+        btnCalc = (Button) findViewById(R.id.buttonCalculate);
         prevDateTextView = (TextView) findViewById(R.id.textViewPrevDate);
         nextDateTextView = (TextView) findViewById(R.id.textViewNextDate);
         textViewUnits = (TextView) findViewById(R.id.textViewUnits);
@@ -85,10 +186,160 @@ public class MainActivity extends AppCompatActivity {
         prevReadTextEdit = (EditText) findViewById(R.id.editTextPrevReading);
         nextReadTextEdit = (EditText) findViewById(R.id.editTextNextReading);
         init();
+
     }
 
     void init() {
-        final Calendar c = Calendar.getInstance();
+        //fill price model
+        Calendar c = Calendar.getInstance();
+        //instantiate old Model
+        PriceModel pm1;
+        int units4Months1[] = {1000, 1000, 1000, Integer.MAX_VALUE};//last units range is limitless
+        int price4units1[] =  {10,   20,   40,   80};
+        pm1 = new PriceModel("Old Model", 0, units4Months1, price4units1);
+        priceModels.add(pm1);
+
+        //Model started on 2016
+        c.set(2016, Calendar.JANUARY,1, 0, 0, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        long appliedDate = c.getTimeInMillis();
+        int units4Months[] = {1000, 500, 500, 1000, 1000, Integer.MAX_VALUE};//last units range is limitless
+        int price4units[] =  {10,   20,  40,  80,   120, 200};
+        pm1 = new PriceModel("Initial Model", appliedDate, units4Months, price4units);
+        priceModels.add(pm1);
+
+        //Model started on 2018
+        c.set(2018, Calendar.FEBRUARY,1, 0, 0, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        appliedDate = c.getTimeInMillis();
+        int units4Months2[] = {1500, 1500, 1000, Integer.MAX_VALUE};//last units range is limitless
+        int price4units2[] =  {10,   35,   80,    120};
+        pm1 = new PriceModel("2018 Model", appliedDate, units4Months2, price4units2);
+        priceModels.add(pm1);
+        //sort the priceModels according to applied date
+        Collections.sort(priceModels, new PriceModelDateComparator());
+        //load config
+        loadSettings();
+    }
+
+    public void onPrevDateClicked(View v) {
+        selectedDateView = prevDateTextView;
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    void setPriceModelsPeriods(long prevDate, long nextDate, int prevReading, int nextReading){
+        int k;
+        PriceModel pm1;
+        for(k =0; k<priceModels.size()-1; k++) {
+            pm1 = priceModels.get(k);
+            PriceModel pm2 = priceModels.get(k+1);
+            //prevDate must be < nextDate
+            if(prevDate >= pm1.appliedDate){
+                if(prevDate <pm2.appliedDate) {
+                    pm1.pDate = prevDate;
+                    if (nextDate < pm2.appliedDate) {
+                        pm1.nDate = nextDate;
+                    } else {
+                        pm1.nDate = pm2.appliedDate - 1000 * 3600 * 24;
+                    }
+                    pm1.applied = true;
+                } else {
+                    pm1.applied = false;
+                }
+            } else {
+                if (nextDate >= pm1.appliedDate) {
+                    pm1.pDate = pm1.appliedDate;
+                    if(nextDate < pm2.appliedDate) {
+                        pm1.nDate = nextDate;
+                    } else {
+                        pm1.nDate = pm2.appliedDate - 1000 * 3600 * 24;
+                    }
+                    pm1.applied = true;
+                } else {
+                    pm1.applied = false;
+                }
+            }
+        }
+        pm1 = priceModels.get(k);
+        if(prevDate >= pm1.appliedDate){
+            //if(prevDate <pm2.appliedDate)
+            {
+                pm1.pDate = prevDate;
+                pm1.nDate = nextDate;
+                pm1.applied = true;
+            }
+        } else {
+            if (nextDate >= pm1.appliedDate) {
+                pm1.pDate = pm1.appliedDate;
+                pm1.nDate = nextDate;
+                pm1.applied = true;
+            } else {
+                pm1.applied = false;
+            }
+        }
+        //distribute readings between applied models
+        int reading =0;
+        for(k =0; k<priceModels.size(); k++) {
+            PriceModel pm = priceModels.get(k);
+            if(!pm.applied) {
+                continue;
+            }
+            long totalPeriod = nextReading - prevReading;
+            double delta = 1.0 * totalPeriod * (pm.nDate - pm.pDate+1000*3600*24)/(nextDate - prevDate+1000*3600*24);
+            pm.prevReading =  reading;
+            pm.nextReading = (int) (1.0 * reading + delta);
+            reading = pm.nextReading + 1;
+            if(pm.nextReading < pm.prevReading) {
+                //pm.nextReading = pm.prevReading;
+            }
+        }
+    }
+
+    public void onCalculateClicked(View v) {
+        {
+            int prevReading = Integer.parseInt(prevReadTextEdit.getText().toString());
+
+            int nextReading = Integer.parseInt(nextReadTextEdit.getText().toString());
+            setPriceModelsPeriods(prevDate, nextDate, prevReading, nextReading);
+
+            //show the whole period and units:
+            long periodInDays = (long) (1.0 * (nextDate - prevDate)/(24*60*60*1000));
+            long readingDiff = nextReading - prevReading;
+            textViewUnits.setText(String.format("%d",readingDiff));
+            textViewPeriod.setText(String.format("%d", (int) periodInDays));
+        }
+        double price = 0;
+        String calcString = "";
+        for(int i=0; i<priceModels.size(); i++) {
+            PriceModel pm = priceModels.get(i);
+            if(pm.applied) {
+                pm.getPrice();
+                price += pm.price;//getPrice(nextDate, prevDate);
+                if(!calcString.isEmpty()){
+                    calcString +="+";
+                }
+                calcString += "("+pm.calculationString+")";
+                //double periodInDays= 1.0 * (pm.nDate - pm.pDate)/(24*60*60*1000);
+                //readingDiff = pm.nextReading - pm.prevReading;
+            }
+        }
+
+        priceTextView.setText(String.format("%.0f",price));
+        calcTextView.setText(calcString);
+
+        storeSettings();
+        if(saveCheckBox.isChecked()) {
+            saveValues(price, calcString);
+        }
+    }
+
+    void loadSettings() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
         long timeInMilliSec = c.getTimeInMillis();
 
         prevDate = sharedPref.getLong("PREV_DATE", timeInMilliSec);
@@ -100,43 +351,74 @@ public class MainActivity extends AppCompatActivity {
         prevReadTextEdit.setText(""+tmp);
         tmp = sharedPref.getLong("NEXT_READING", 0);
         nextReadTextEdit.setText(""+tmp);
+
+        boolean checked = sharedPref.getBoolean("SAVE_VALUES", true);
+        saveCheckBox.setChecked(checked);
     }
 
-    public void onPrevDateClicked(View v) {
-        selectedDateView = prevDateTextView;
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
-    }
-
-    public void onCalculateClicked(View v) {
-        double price = getPrice(nextDate, prevDate);
-        priceTextView.setText(String.format("%.0f",price));
-        calcTextView.setText(calculationStr);
-
+    void storeSettings() {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong("PREV_DATE", prevDate);
         editor.putLong("NEXT_DATE", nextDate);
         editor.putLong("PREV_READING", Long.parseLong(prevReadTextEdit.getText().toString()));
         editor.putLong("NEXT_READING", Long.parseLong(nextReadTextEdit.getText().toString()));
+        editor.putBoolean("SAVE_VALUES", saveCheckBox.isChecked());
         editor.commit();
     }
 
-    public void onSaveClicked (View v) {
+    void saveValues(double price, String calculationStr){
         elec_info eInfo = new elec_info();
+        eInfo.prevDateInMilliSec = prevDate;
+        eInfo.nextDateInMilliSec = nextDate;
+        eInfo.prevReading = Long.parseLong(prevReadTextEdit.getText().toString());
+        eInfo.nextReading = Long.parseLong(nextReadTextEdit.getText().toString());
+        eInfo.price = String.format("%.0f",price);
+        eInfo.calculationString = calculationStr;
+        dbHandler.addRecord(eInfo);
+    }
+
+    public void onSaveClicked (View v) {
+        /*elec_info eInfo = new elec_info();
         eInfo.prevDateInMilliSec = prevDate;
         eInfo.nextDateInMilliSec = nextDate;
         eInfo.prevReading = Long.parseLong(prevReadTextEdit.getText().toString());
         eInfo.nextReading = Long.parseLong(nextReadTextEdit.getText().toString());
         eInfo.price = String.format("%.0f",getPrice(nextDate, prevDate));
         eInfo.calculationString = calculationStr;
-        dbHandler.addRecord(eInfo);
+        dbHandler.addRecord(eInfo);*/
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent theIntent)
+    {
+        super.onActivityResult(requestCode, resultCode, theIntent);
+        // check if the request code is same as what is passed  here it is 2
+        if(requestCode==2 && theIntent != null)
+        {
+            elec_info eInfo = theIntent.getParcelableExtra("eInfo");
+            prevDate = eInfo.prevDateInMilliSec;
+            nextDate = eInfo.nextDateInMilliSec;
+            showDate(prevDateTextView, prevDate);
+            showDate(nextDateTextView, nextDate);
+
+            prevReadTextEdit.setText(Long.toString(eInfo.prevReading));
+            nextReadTextEdit.setText(Long.toString(eInfo.nextReading));
+            textViewUnits.setText("---");
+            textViewPeriod.setText("---");
+            priceTextView.setText("---");
+            calcTextView.setText("---");
+            //btnCalc.performClick();
+            //onCalculateClicked(MainActivity.this.getBaseContext());
+            /*String message=data.getStringExtra("MESSAGE");
+            textView1.setText(message);*/
+        }
     }
 
     public void onHistoryClicked(View aa) {
         if(dbHandler.getRecordsCount() !=0) {
             //local history instead of site history
             Intent myIntent = new Intent(MainActivity.this, InfoListActivity.class);
-            MainActivity.this.startActivity(myIntent);
+            MainActivity.this.startActivityForResult(myIntent,2);
         } else {
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle("History")
@@ -158,8 +440,8 @@ public class MainActivity extends AppCompatActivity {
         return msec;
     }
 
-    String calculationStr = "";
-    private double getPrice(long nDate, long pDate) {
+    //String calculationStr = "";
+    /*private double getPrice(long nDate, long pDate) {
         long periodInDays= (nDate -pDate)/(24*60*60*1000);
         int     prevReading = Integer.parseInt(prevReadTextEdit.getText().toString());
         int     nextReading = Integer.parseInt(nextReadTextEdit.getText().toString());
@@ -207,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return price;
-    }
+    }*/
 
     public void onMoveUpClicked(View v) {
         prevReadTextEdit.setText(nextReadTextEdit.getText().toString());
@@ -229,6 +511,11 @@ public class MainActivity extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker
             final Calendar c = Calendar.getInstance();
+            if(selectedDateView == prevDateTextView) {
+                c.setTimeInMillis(prevDate);
+            } else {
+                c.setTimeInMillis(nextDate);
+            }
             int day = c.get(Calendar.DAY_OF_MONTH);
             int month = c.get(Calendar.MONTH);
             int year = c.get(Calendar.YEAR);
@@ -240,7 +527,8 @@ public class MainActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int y, int m, int d) {
             // Do something with the time chosen by the user
             final Calendar c = Calendar.getInstance();
-            c.set(y, m, d);
+            c.set(y, m, d, 0, 0, 0);
+            c.set(Calendar.MILLISECOND, 0);
             long msec = c.getTimeInMillis();
             if(selectedDateView == prevDateTextView) {
                 prevDate = msec;
@@ -264,6 +552,7 @@ public class MainActivity extends AppCompatActivity {
             showDate(selectedDateView, msec);
         }
     };
+
     static void showDate(TextView dateView, long msec) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(msec);
@@ -275,6 +564,7 @@ public class MainActivity extends AppCompatActivity {
         dateView.setText(new StringBuilder().append(day).append("/")
                 .append(month).append("/").append(year));
     }
+
     public void onImportClicked(View v) {
         importDB();
     }
