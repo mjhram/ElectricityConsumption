@@ -1,14 +1,18 @@
 package ac.mohammad.com.electricityconsumption;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -23,16 +27,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.obsez.android.lib.filechooser.ChooserDialog;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.TimeZone;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -159,7 +166,10 @@ public class MainActivity extends AppCompatActivity {
                 exportDB();
                 return true;
             case R.id.menu_import:
-                importDB();
+                importDbFromFile();
+                return true;
+            case R.id.menu_graph:
+                showGraph();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -191,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
     void init() {
         //fill price model
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         //instantiate old Model
         PriceModel pm1;
         int units4Months1[] = {1000, 1000, 1000, Integer.MAX_VALUE};//last units range is limitless
@@ -217,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         pm1 = new PriceModel("2018 Model", appliedDate, units4Months2, price4units2);
         priceModels.add(pm1);
         //sort the priceModels according to applied date
-        Collections.sort(priceModels, new PriceModelDateComparator());
+        //Collections.sort(priceModels, new PriceModelDateComparator());
         //load config
         loadSettings();
     }
@@ -241,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                     if (nextDate < pm2.appliedDate) {
                         pm1.nDate = nextDate;
                     } else {
-                        pm1.nDate = pm2.appliedDate - 1000 * 3600 * 24;
+                        pm1.nDate = pm2.appliedDate /*- 1000 * 3600 * 24*/;
                     }
                     pm1.applied = true;
                 } else {
@@ -253,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                     if(nextDate < pm2.appliedDate) {
                         pm1.nDate = nextDate;
                     } else {
-                        pm1.nDate = pm2.appliedDate - 1000 * 3600 * 24;
+                        pm1.nDate = pm2.appliedDate /*- 1000 * 3600 * 24*/;
                     }
                     pm1.applied = true;
                 } else {
@@ -335,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void loadSettings() {
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
@@ -433,8 +443,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    void showGraph() {
+        if(dbHandler.getRecordsCount() !=0) {
+            //local history instead of site history
+            Intent myIntent = new Intent(MainActivity.this, GraphActivity.class);
+            MainActivity.this.startActivity(myIntent);
+        } else {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Graph")
+                    .setMessage("There are no records to show.")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+    }
+
+
     static long get2016Jan1inMSec() {
-        final Calendar c = Calendar.getInstance();
+        final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         c.set(2016, 0, 1);
         long msec = c.getTimeInMillis();
         return msec;
@@ -510,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
+            final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
             if(selectedDateView == prevDateTextView) {
                 c.setTimeInMillis(prevDate);
             } else {
@@ -526,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
 
         public void onDateSet(DatePicker view, int y, int m, int d) {
             // Do something with the time chosen by the user
-            final Calendar c = Calendar.getInstance();
+            final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
             c.set(y, m, d, 0, 0, 0);
             c.set(Calendar.MILLISECOND, 0);
             long msec = c.getTimeInMillis();
@@ -546,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
             // arg1 = year
             // arg2 = month
             // arg3 = day
-            final Calendar c = Calendar.getInstance();
+            final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
             c.set(arg1, arg2, arg3);
             long msec = c.getTimeInMillis();
             showDate(selectedDateView, msec);
@@ -554,7 +584,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     static void showDate(TextView dateView, long msec) {
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         c.setTimeInMillis(msec);
         int day = c.get(Calendar.DAY_OF_MONTH);
         int month = c.get(Calendar.MONTH);
@@ -565,20 +595,64 @@ public class MainActivity extends AppCompatActivity {
                 .append(month).append("/").append(year));
     }
 
-    public void onImportClicked(View v) {
-        importDB();
+    private String _path;
+    public void importDbFromFile() {
+
+        new ChooserDialog().with(this)
+                .withStartFile(_path)
+                .withChosenListener(new ChooserDialog.Result() {
+                    @Override
+                    public void onChoosePath(String path, File pathFile) {
+                        importDB(path);
+                        //Toast.makeText(MainActivity.this, "FILE: " + path, Toast.LENGTH_SHORT).show();
+                        _path = path;
+
+                    }
+                })
+                .build()
+                .show();
     }
 
-    private void importDB(){
-        File sd = Environment.getExternalStorageDirectory();
+    public static String getTime() {
+        String timezone="GMT+3";
+
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(timezone));
+        Date date = c.getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd");
+        String strDate = df.format(date);
+        return strDate;
+    }
+
+    public static String getFileNameWithoutExtension(String _path, String _pathSeperator, String _extensionSeperator) {
+        try {
+            int dot = _path.lastIndexOf(_extensionSeperator);
+            int sep = _path.lastIndexOf(_pathSeperator);
+            return _path.substring(sep + 1, dot);
+        } catch (Exception ex) {
+            return "Unknown";
+        }
+    }
+
+    final private int MY_PERMISSIONS_REQUEST = 100;
+    private int fn; //1=import, 2=export
+    private void importDB(String backupDB){
+        fn = 1;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST);
+        }
+        //File sd = Environment.getExternalStorageDirectory();
         File data = Environment.getDataDirectory();
         FileChannel source=null;
         FileChannel destination=null;
         String tmp = this.getPackageName();
         String currentDBPath = "/data/"+ tmp +"/databases/"+databaseHandler.DATABASE_NAME;
-        String backupDBPath = databaseHandler.DATABASE_NAME;
+        //String backupDBPath = databaseHandler.DATABASE_NAME;
         File currentDB = new File(data, currentDBPath);
-        File backupDB = new File(sd, backupDBPath);
+        //File backupDB = new File(sd, backupDBPath);
         try {
             source = new FileInputStream(backupDB).getChannel();
             destination = new FileOutputStream(currentDB).getChannel();
@@ -597,13 +671,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void exportDB(){
+        fn = 2;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST);
+            return;
+        }
         File sd = Environment.getExternalStorageDirectory();
         File data = Environment.getDataDirectory();
         FileChannel source=null;
         FileChannel destination=null;
         String tmp = this.getPackageName();
         String currentDBPath = "/data/"+ tmp +"/databases/"+databaseHandler.DATABASE_NAME;
-        String backupDBPath = databaseHandler.DATABASE_NAME;
+        //Date currentTime = Calendar.getInstance().getTime();
+        //SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+        //String formatted = format1.format(currentTime.getTime());
+
+        String backupDBPath = getFileNameWithoutExtension(databaseHandler.DATABASE_NAME,"\\", ".");
+        backupDBPath = backupDBPath + "_"+getTime();
+        String extension = databaseHandler.DATABASE_NAME.substring(databaseHandler.DATABASE_NAME.lastIndexOf("."));
+        backupDBPath = backupDBPath + extension;
+        //String backupDBPath = databaseHandler.DATABASE_NAME;
         File currentDB = new File(data, currentDBPath);
         File backupDB = new File(sd, backupDBPath);
         try {
@@ -615,6 +706,34 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "DB Exported!"+backupDB.getAbsolutePath(), Toast.LENGTH_LONG).show();
         } catch(IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    if(fn == 1) importDbFromFile();
+                    else if(fn==2) exportDB();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    fn=0;
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+            default:
+                fn = 0;
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

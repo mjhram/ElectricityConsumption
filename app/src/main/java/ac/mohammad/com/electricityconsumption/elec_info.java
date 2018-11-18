@@ -7,6 +7,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by mohammad.haider on 2/16/2015.
  */
@@ -71,6 +75,15 @@ public class elec_info implements Parcelable {
             return new elec_info[size];
         }
     };
+
+    //aFormat example = "EEE MMM d HH:mm:ss zz yyyy"
+    static public Date stringToDate(String aDate, String aFormat) {
+        if(aDate==null) return null;
+        ParsePosition pos = new ParsePosition(0);
+        SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
+        Date stringDate = simpledateformat.parse(aDate, pos);
+        return stringDate;
+    }
 
     static public elec_info getInfoFromRow(Cursor in) {
         elec_info tmpMobInfo = new elec_info();

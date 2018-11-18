@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import static ac.mohammad.com.electricityconsumption.Util.getDateString;
+
 /*public class InfoListActivity extends Activity {
 
     @Override
@@ -209,17 +211,6 @@ class MyInfoArrayAdapter extends ArrayAdapter<elec_info> {
         });        return rowView;
     }
 
-    private String getDateString(long msec) {
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(msec);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-        int month = c.get(Calendar.MONTH);
-        int year = c.get(Calendar.YEAR);
-
-        month++;
-        String tmp = day + "/" + month + "/"+ year;
-        return tmp;
-    }
     private void showInfo(elec_info info, View rowView) {
         TextView txt_tmp;
         txt_tmp = (TextView) rowView.findViewById(R.id.tvTime);
@@ -244,7 +235,7 @@ class MyInfoArrayAdapter extends ArrayAdapter<elec_info> {
 
     private String getDate(String time) {
         Timestamp timestamp = Timestamp.valueOf(time);
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         TimeZone tz = TimeZone.getDefault();
 
         calendar.setTimeInMillis(timestamp.getTime());

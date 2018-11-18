@@ -9,4 +9,7 @@
     <item android:id="@+id/menu_import"
         android:title="@string/menu_import"
         />
+    <item android:id="@+id/menu_graph"
+        android:title="@string/menu_graph"
+        />
 </menu>
