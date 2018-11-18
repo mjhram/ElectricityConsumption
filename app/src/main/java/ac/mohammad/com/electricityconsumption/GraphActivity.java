@@ -85,10 +85,10 @@ public class GraphActivity extends AppCompatActivity {
         series2.setColor(Color.RED);
 
         GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
-        graph.getSecondScale().setVerticalAxisTitle("Av. Price per Month");
+        graph.getSecondScale().setVerticalAxisTitle(getString(R.string.avPricePerMonth));
         graph.getSecondScale().setVerticalAxisTitleColor(Color.RED);
 
-        gridLabel.setVerticalAxisTitle("Av. Units per Month");
+        gridLabel.setVerticalAxisTitle(getString(R.string.avUnitsPerMonth));
         //gridLabel.setVerticalLabelsSecondScaleColor(Color.RED);
         //gridLabel.reloadStyles();
         series.setOnDataPointTapListener(new OnDataPointTapListener() {

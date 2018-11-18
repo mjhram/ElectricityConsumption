@@ -9,5 +9,7 @@
     <string name="menu_orderbyprevdate">تاريخ القراءة</string>
     <string name="menu_orderbysavedate">تاريخ تدوين القراءة</string>
     <string name="menu_noorder">بدون ترتيب</string>
-    <string name="avUnitsPerMonth">معدل الوحدات بالشهر</string>
+    <string name="avUnitsPerMonth">وحدات بالشهر</string>
+    <string name="avPricePerMonth">دينار بالشهر</string>
+
 </resources>
