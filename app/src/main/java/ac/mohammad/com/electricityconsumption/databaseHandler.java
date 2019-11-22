@@ -15,7 +15,7 @@ import java.util.List;
 public class databaseHandler extends SQLiteOpenHelper {
         // All Static variables
         // Database
-        private static final int DATABASE_VERSION = 1;
+        private static final int DATABASE_VERSION = 2;
         public static final String DATABASE_NAME = "elecReadings.db";
         private static final String KEY_ID = "No";
 
@@ -47,11 +47,17 @@ public class databaseHandler extends SQLiteOpenHelper {
         // Upgrading database
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            // Drop older table if existed
+            /*// Drop older table if existed
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_Units);
 
             // Create tables again
-            onCreate(db);
+            onCreate(db);*/
+
+            if (oldVersion==1 && newVersion == 2) {
+                db.execSQL("ALTER TABLE "+TABLE_Units+" ADD COLUMN isItBill INTEGER DEFAULT 0");
+            } else {
+
+            }
         }
 
         /**

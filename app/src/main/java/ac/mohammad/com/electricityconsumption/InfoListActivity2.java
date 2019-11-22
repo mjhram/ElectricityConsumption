@@ -1,9 +1,11 @@
 package ac.mohammad.com.electricityconsumption;
 
-import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -17,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,40 +30,81 @@ import java.util.TimeZone;
 
 import static ac.mohammad.com.electricityconsumption.Util.getDateString;
 
-/*public class InfoListActivity extends Activity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info_list);
-    }
-}*/
-
-public class InfoListActivity extends ListActivity {
+public class InfoListActivity2 extends AppCompatActivity{//ListActivity {
     public databaseHandler dbHandler;
+    private ListView listView;
+    final int REQUEST_CODE_GALLERY = 999;
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        //AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
-        /*menu.setHeaderTitle("Menu:");
-        menu.add(0, v.getId(), 0, "Use");
-*/
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_context, menu);
         super.onCreateContextMenu(menu, v, menuInfo);
     };
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK && data != null){
+            Uri uri = data.getData();
+            elec_info eInfo = data.getParcelableExtra("eInfo");
+
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(uri);
+
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                //imageView.setImageBitmap(bitmap);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode == REQUEST_CODE_GALLERY){
+            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, REQUEST_CODE_GALLERY);
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "You don't have permission to access file location!", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }*/
+
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
-        MyInfoArrayAdapter adapter = (MyInfoArrayAdapter)getListView().getAdapter();
-
+        MyInfoArrayAdapter2 adapter = (MyInfoArrayAdapter2)listView.getAdapter();
         switch (item.getItemId()) {
+            /*case R.id.menu_addimage:
+                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                id = listView.getItemIdAtPosition(info.position);
+
+                eInfo = adapter.mobInfoArray.get((int)id);
+
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickPhoto.putExtra("eInfo", eInfo);
+                startActivityForResult(pickPhoto , 1);
+                break;*/
             case R.id.menu_use:
-                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                long id = this.getListView().getItemIdAtPosition(info.position);
+                AdapterView.AdapterContextMenuInfo info;
+                elec_info eInfo;
+                long id;
+                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                id = listView.getItemIdAtPosition(info.position);
 
-                elec_info eInfo = adapter.mobInfoArray.get((int)id);
+                eInfo = adapter.mobInfoArray.get((int)id);
 
-                Intent myIntent = new Intent(InfoListActivity.this, MainActivity.class);
+                Intent myIntent = new Intent(InfoListActivity2.this, MainActivity.class);
                 myIntent.putExtra("eInfo", eInfo);
                 setResult(2,myIntent);
                 finish();//finishing activity
@@ -91,24 +136,17 @@ public class InfoListActivity extends ListActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_infolist);
+        listView = (ListView) findViewById(R.id.infolist);
+
         dbHandler = new databaseHandler(this);
         List<elec_info> values = dbHandler.getAllRecords(SortType.None);
-        MyInfoArrayAdapter adapter = new MyInfoArrayAdapter(this, values);
-        setListAdapter(adapter);
-        final ListView listView = getListView();
+        MyInfoArrayAdapter2 adapter = new MyInfoArrayAdapter2(this, values);
+        listView.setAdapter(adapter);
+        //final ListView listView = getListView();
         registerForContextMenu(listView);
- 
-        /*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long id) {
-                MyInfoArrayAdapter adapter = (MyInfoArrayAdapter)listView.getAdapter();
-                elec_info eInfo = adapter.mobInfoArray.get(position);
-                Toast.makeText(getApplicationContext(), "Long Clicked : "+position, Toast.LENGTH_LONG).show();
-                ListActivity.this.openContextMenu(listView);
-                return true;
-            }
-        });*/
     }
+
     /*@Override
     public boolean onContextItemSelected(MenuItem item) {
 
@@ -127,7 +165,7 @@ public class InfoListActivity extends ListActivity {
     /*@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         //String item = (String) getListAdapter().getItem(position);
-        MyInfoArrayAdapter adapter = (MyInfoArrayAdapter)l.getAdapter();
+        MyInfoArrayAdapter2 adapter = (MyInfoArrayAdapter2)l.getAdapter();
         elec_info eInfo = adapter.mobInfoArray.get(position);
         //Toast.makeText(this, position + " selected", Toast.LENGTH_LONG).show();
     }*/
@@ -173,11 +211,11 @@ class MyComparatorB implements Comparator<elec_info> {
 
 }*/
 
-class MyInfoArrayAdapter extends ArrayAdapter<elec_info> {
-    private final InfoListActivity theListActivity;
+class MyInfoArrayAdapter2 extends ArrayAdapter<elec_info> {
+    private final InfoListActivity2 theListActivity;
     public List<elec_info> mobInfoArray;
 
-    public MyInfoArrayAdapter(InfoListActivity aListActivity, List<elec_info> values) {
+    public MyInfoArrayAdapter2(InfoListActivity2 aListActivity, List<elec_info> values) {
         super(aListActivity, R.layout.info_row_layout, values);
         this.theListActivity = aListActivity;
         this.mobInfoArray = values;
@@ -231,6 +269,13 @@ class MyInfoArrayAdapter extends ArrayAdapter<elec_info> {
         txt_tmp.setText(info.calculationString);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvUnitsString);
         txt_tmp.setText(String.format("%d", info.nextReading-info.prevReading));
+        txt_tmp = (TextView) rowView.findViewById(R.id.tvDaysString);
+        long days = (long) (1.0 * (info.nextDateInMilliSec - info.prevDateInMilliSec) /(1000*60*60*24));
+        txt_tmp.setText(String.format("%d", (int) days));
+        txt_tmp = (TextView) rowView.findViewById(R.id.tvIsItBillString);
+        txt_tmp.setText(info.isItBill==1?"نعم":"لا");
+
+
     }
 
     private String getDate(String time) {

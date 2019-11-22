@@ -26,8 +26,8 @@ android {
         applicationId "ac.mohammad.com.electricityconsumption"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 23
-        versionName '2.3'
+        versionCode 24
+        versionName '2.4'
     }
     buildTypes {
         release {

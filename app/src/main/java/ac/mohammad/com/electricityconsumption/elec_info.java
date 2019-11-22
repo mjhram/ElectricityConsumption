@@ -24,6 +24,7 @@ public class elec_info implements Parcelable {
     public Long nextReading;
     public String price;
     public String calculationString;
+    public int isItBill;
 
     final private String TABLE_Units = databaseHandler.TABLE_Units;
 
@@ -36,6 +37,7 @@ public class elec_info implements Parcelable {
         dest.writeLong(nextReading);
         dest.writeString(price);
         dest.writeString(calculationString);
+        dest.writeInt(isItBill);
 
     }
 
@@ -52,6 +54,7 @@ public class elec_info implements Parcelable {
         nextReading=in.readLong();
         price = in.readString();
         calculationString = in.readString();
+        isItBill = in.readInt();
     }
 
     //private Activity theActivity;
@@ -96,6 +99,7 @@ public class elec_info implements Parcelable {
         tmpMobInfo.nextReading=in.getLong(in.getColumnIndex("nextReading"));
         tmpMobInfo.price=in.getString(in.getColumnIndex("price"));
         tmpMobInfo.calculationString=in.getString(in.getColumnIndex("calcStr"));
+        tmpMobInfo.isItBill=in.getInt(in.getColumnIndex("isItBill"));
 
         return tmpMobInfo;
     }
@@ -115,6 +119,7 @@ public class elec_info implements Parcelable {
         params.put("nextReading", tmp);
         params.put("price", price);
         params.put("calcStr", calculationString);
+        params.put("isItBill", isItBill);
         long tmpL =  db.insert(TABLE_Units, null, params);
         Log.d("Test", Long.toString(tmpL));
     }

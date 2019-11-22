@@ -24,7 +24,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape">
         </activity>
-        <activity android:name=".InfoListActivity"></activity>
+        <activity android:name=".InfoListActivity2"></activity>
         <!-- meta-data
             android:name="io.fabric.ApiKey"
             android:value="67e5e650c7c58856fafeae0a91405d1791287654" / -->

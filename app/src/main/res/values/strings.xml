@@ -5,11 +5,16 @@
     <string name="menu_import">استرجاع البيانات...</string>
     <string name="menu_graph">رسم بياني</string>
     <string name="menu_use">استخدم</string>
+    <string name="menu_addimage">اضف ورقة الكهرباء...</string>
     <string name="menu_order">ترتيب حسب...</string>
     <string name="menu_orderbyprevdate">تاريخ القراءة</string>
     <string name="menu_orderbysavedate">تاريخ تدوين القراءة</string>
     <string name="menu_noorder">بدون ترتيب</string>
     <string name="avUnitsPerMonth">وحدات بالشهر</string>
     <string name="avPricePerMonth">دينار بالشهر</string>
-
+    <string-array name="yesno_array">
+        <item>نعم</item>
+        <item>لا</item>
+    </string-array>
+    <string name="select">Yes or No</string>
 </resources>

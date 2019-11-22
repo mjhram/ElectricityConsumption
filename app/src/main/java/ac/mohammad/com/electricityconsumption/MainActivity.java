@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     static TextView selectedDateView, prevDateTextView, nextDateTextView,
             priceTextView, calcTextView, textViewUnits, textViewPeriod;
+    static Spinner spinneryn;
     static CheckBox saveCheckBox;
     static Button btnCalc;
     static long prevDate, nextDate;
@@ -192,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
         textViewPeriod = (TextView) findViewById(R.id.textViewPeriod);
         priceTextView = (TextView) findViewById(R.id.textViewPrice);
         calcTextView = (TextView) findViewById(R.id.textViewCalc);
+        spinneryn = (Spinner) findViewById(R.id.spinneryn);
+
         prevReadTextEdit = (EditText) findViewById(R.id.editTextPrevReading);
         nextReadTextEdit = (EditText) findViewById(R.id.editTextNextReading);
         init();
@@ -361,6 +365,8 @@ public class MainActivity extends AppCompatActivity {
         tmp = sharedPref.getLong("NEXT_READING", 0);
         nextReadTextEdit.setText(""+tmp);
 
+        int isitBill = sharedPref.getInt("ISIT_BILL", 1);
+        spinneryn.setSelection(isitBill);
         boolean checked = sharedPref.getBoolean("SAVE_VALUES", true);
         saveCheckBox.setChecked(checked);
     }
@@ -371,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putLong("NEXT_DATE", nextDate);
         editor.putLong("PREV_READING", Long.parseLong(prevReadTextEdit.getText().toString()));
         editor.putLong("NEXT_READING", Long.parseLong(nextReadTextEdit.getText().toString()));
+        editor.putInt("ISIT_BILL", spinneryn.getSelectedItemPosition());
         editor.putBoolean("SAVE_VALUES", saveCheckBox.isChecked());
         editor.commit();
     }
@@ -383,6 +390,7 @@ public class MainActivity extends AppCompatActivity {
         eInfo.nextReading = Long.parseLong(nextReadTextEdit.getText().toString());
         eInfo.price = String.format("%.0f",price);
         eInfo.calculationString = calculationStr;
+        eInfo.isItBill = spinneryn.getSelectedItemPosition()==0?1:0;
         dbHandler.addRecord(eInfo);
     }
 
@@ -416,6 +424,7 @@ public class MainActivity extends AppCompatActivity {
             textViewPeriod.setText("---");
             priceTextView.setText("---");
             calcTextView.setText("---");
+            spinneryn.setSelection(eInfo.isItBill==1?0:1);
             //btnCalc.performClick();
             //onCalculateClicked(MainActivity.this.getBaseContext());
             /*String message=data.getStringExtra("MESSAGE");
@@ -426,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
     public void onHistoryClicked(View aa) {
         if(dbHandler.getRecordsCount() !=0) {
             //local history instead of site history
-            Intent myIntent = new Intent(MainActivity.this, InfoListActivity.class);
+            Intent myIntent = new Intent(MainActivity.this, InfoListActivity2.class);
             MainActivity.this.startActivityForResult(myIntent,2);
         } else {
             new AlertDialog.Builder(MainActivity.this)
