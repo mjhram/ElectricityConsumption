@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.obsez.android.lib.filechooser.ChooserDialog;
 
 import java.io.File;
@@ -41,7 +40,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.TimeZone;
 
-import io.fabric.sdk.android.Fabric;
+//import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<PriceModel> priceModels = new ArrayList<>();
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         sharedPref = getPreferences(Context.MODE_PRIVATE);

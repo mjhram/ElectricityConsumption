@@ -97,7 +97,7 @@ public class InfoListActivity extends ListActivity {
         setListAdapter(adapter);
         final ListView listView = getListView();
         registerForContextMenu(listView);
-
+ 
         /*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long id) {
