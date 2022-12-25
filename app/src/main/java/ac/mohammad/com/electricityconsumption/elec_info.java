@@ -91,15 +91,15 @@ public class elec_info implements Parcelable {
     static public elec_info getInfoFromRow(Cursor in) {
         elec_info tmpMobInfo = new elec_info();
 
-        tmpMobInfo.id=in.getLong(in.getColumnIndex("No"));
-        tmpMobInfo.time=in.getString(in.getColumnIndex("time"));
-        tmpMobInfo.prevDateInMilliSec=in.getLong(in.getColumnIndex("prevDateInMilliSec"));
-        tmpMobInfo.nextDateInMilliSec=in.getLong(in.getColumnIndex("nextDateInMilliSec"));
-        tmpMobInfo.prevReading=in.getLong(in.getColumnIndex("prevReading"));
-        tmpMobInfo.nextReading=in.getLong(in.getColumnIndex("nextReading"));
-        tmpMobInfo.price=in.getString(in.getColumnIndex("price"));
-        tmpMobInfo.calculationString=in.getString(in.getColumnIndex("calcStr"));
-        tmpMobInfo.isItBill=in.getInt(in.getColumnIndex("isItBill"));
+        tmpMobInfo.id=in.getLong(in.getColumnIndexOrThrow("No"));
+        tmpMobInfo.time=in.getString(in.getColumnIndexOrThrow("time"));
+        tmpMobInfo.prevDateInMilliSec=in.getLong(in.getColumnIndexOrThrow("prevDateInMilliSec"));
+        tmpMobInfo.nextDateInMilliSec=in.getLong(in.getColumnIndexOrThrow("nextDateInMilliSec"));
+        tmpMobInfo.prevReading=in.getLong(in.getColumnIndexOrThrow("prevReading"));
+        tmpMobInfo.nextReading=in.getLong(in.getColumnIndexOrThrow("nextReading"));
+        tmpMobInfo.price=in.getString(in.getColumnIndexOrThrow("price"));
+        tmpMobInfo.calculationString=in.getString(in.getColumnIndexOrThrow("calcStr"));
+        tmpMobInfo.isItBill=in.getInt(in.getColumnIndexOrThrow("isItBill"));
 
         return tmpMobInfo;
     }

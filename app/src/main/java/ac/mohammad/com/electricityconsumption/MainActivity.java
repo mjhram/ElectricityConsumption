@@ -10,11 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,6 +21,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.obsez.android.lib.filechooser.ChooserDialog;
 
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    DatePickerDialog picker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,7 +201,24 @@ public class MainActivity extends AppCompatActivity {
         prevReadTextEdit = (EditText) findViewById(R.id.editTextPrevReading);
         nextReadTextEdit = (EditText) findViewById(R.id.editTextNextReading);
         init();
-
+        prevDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                picker = new DatePickerDialog(MainActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                prevDateTextView.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
     }
 
     void init() {
@@ -605,7 +624,14 @@ public class MainActivity extends AppCompatActivity {
 
     private String _path;
     public void importDbFromFile() {
-
+        fn = 1;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST);
+        }
         new ChooserDialog().with(this)
                 .withStartFile(_path)
                 .withChosenListener(new ChooserDialog.Result() {
@@ -644,14 +670,6 @@ public class MainActivity extends AppCompatActivity {
     final private int MY_PERMISSIONS_REQUEST = 100;
     private int fn; //1=import, 2=export
     private void importDB(String backupDB){
-        fn = 1;
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST);
-        }
         //File sd = Environment.getExternalStorageDirectory();
         File data = Environment.getDataDirectory();
         FileChannel source=null;
@@ -674,9 +692,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onExportClicked(View v) {
+    /*public void onExportClicked(View v) {
         exportDB();
-    }
+    }*/
 
     private void exportDB(){
         fn = 2;

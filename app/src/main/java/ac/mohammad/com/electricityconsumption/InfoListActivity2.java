@@ -1,11 +1,12 @@
 package ac.mohammad.com.electricityconsumption;
 
+import static ac.mohammad.com.electricityconsumption.Util.getDateString;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,6 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -27,8 +30,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
-import static ac.mohammad.com.electricityconsumption.Util.getDateString;
 
 public class InfoListActivity2 extends AppCompatActivity{//ListActivity {
     public databaseHandler dbHandler;

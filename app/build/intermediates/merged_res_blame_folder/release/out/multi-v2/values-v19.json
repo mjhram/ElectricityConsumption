@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "ac.mohammad.com.electricityconsumption.app-mergeReleaseResources-13:/values-v19/values-v19.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\74dfcf470ac7b027d7daf1dacab1a0d6\\transformed\\jetified-filechooser-1.1.2\\res\\values-v19\\values-v19.xml",
+                    "from": {
+                        "startLines": "4,5",
+                        "startColumns": "4,4",
+                        "startOffsets": "174,217",
+                        "endColumns": "42,41",
+                        "endOffsets": "212,254"
+                    },
+                    "to": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,98",
+                        "endColumns": "42,41",
+                        "endOffsets": "93,135"
+                    }
+                }
+            ]
+        }
+    ]
+}

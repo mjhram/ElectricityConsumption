@@ -42,20 +42,19 @@
                 >
 
                 <TextView
+                    android:id="@+id/textViewPrevDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="39dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:id="@+id/textViewPrevDate"
                     android:hint="التاريخ"
                     android:paddingRight="10dp"
                     android:paddingEnd="10dp"
                     android:gravity="center_vertical|right"
                     android:layout_gravity="right"
-
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     />
                 <ImageButton
                     android:layout_width="44dp"
@@ -71,20 +70,20 @@
                     />
 
                 <TextView
+                    android:id="@+id/textViewPrevReading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="القراءة"
-                    android:id="@+id/textViewPrevReading"
+                    android:layout_alignBaseline="@+id/editTextPrevReading"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_below="@id/textViewPrevDate"
                     android:gravity="center_vertical|right"
                     android:layout_gravity="center_vertical|right"
-                    android:paddingRight="10dp"
-                    android:paddingEnd="10dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="القراءة"
 
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@id/textViewPrevDate"
-                    android:layout_alignBaseline="@+id/editTextPrevReading"
                     />
 
                 <EditText
@@ -117,27 +116,28 @@
                 >
 
                 <ImageButton
+                    android:id="@+id/imageButtonMoveUp"
                     android:layout_width="44dp"
                     android:layout_height="39dp"
-                    android:id="@+id/imageButtonMoveUp"
-                    android:scaleType="fitXY"
                     android:layout_gravity="right"
-                    android:src="@drawable/move_up"
                     android:onClick="onMoveUpClicked"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/move_up"
                     />
 
                 <TextView
+                    android:id="@+id/textViewNextReadingTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="القراءة اللاحقة"
-                    android:id="@+id/textViewNextReadingTitle"
-                    android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
                     android:layout_marginTop="10dp"
+                    android:paddingEnd="10dp"
                     android:paddingRight="10dp"
-                    android:paddingEnd="10dp"/>
+                    android:text="القراءة اللاحقة"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    />
 
             </LinearLayout>
 
@@ -149,20 +149,20 @@
 
                 <TextView
 
+                    android:id="@+id/textViewNextDate"
                     android:layout_width="wrap_content"
                     android:layout_height="39dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:id="@+id/textViewNextDate"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="right"
                     android:gravity="center_vertical|right"
                     android:hint="التاريخ"
-                    android:minWidth="120dp"
-                    android:layout_gravity="right"
-                    android:paddingRight="10dp"
-                    android:paddingEnd="10dp"
 
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
+                    android:minWidth="120dp"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     />
 
                 <ImageButton
@@ -181,20 +181,20 @@
 
 
                 <TextView
+                    android:id="@+id/textViewNextReading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="القراءة"
-                    android:id="@+id/textViewNextReading"
-                    android:gravity="center_vertical|right"
-                    android:layout_gravity="right"
-                    android:paddingRight="10dp"
-                    android:paddingEnd="10dp"
-
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_below="@id/textViewNextDate"
                     android:layout_alignBaseline="@+id/editTextNextReading"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/textViewNextDate"
+                    android:layout_gravity="right"
+
+                    android:gravity="center_vertical|right"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:text="القراءة"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     />
                 <EditText
                     android:layout_width="wrap_content"
@@ -227,27 +227,27 @@
                 android:paddingEnd="10dp"/>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
+                android:orientation="horizontal"
                 >
                 <TextView
+                    android:id="@+id/textViewUnits"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="---"
-                    android:id="@+id/textViewUnits" />
-
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    />
                 <TextView
+                    android:id="@+id/textView10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="الوحدات"
                     android:minWidth="100dp"
-                    android:id="@+id/textView10"
-                    android:paddingRight="10dp"
                     android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:text="الوحدات"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     />
             </LinearLayout>
 
@@ -265,14 +265,14 @@
                     android:id="@+id/textViewPeriod" />
 
                 <TextView
+                    android:id="@+id/textView9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="الايام"
                     android:minWidth="100dp"
-                    android:id="@+id/textView9"
-                    android:paddingRight="10dp"
                     android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:text="الايام"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     />
             </LinearLayout>
 
@@ -290,14 +290,14 @@
                     android:id="@+id/textViewPrice" />
 
                 <TextView
+                    android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="المبلغ"
                     android:minWidth="100dp"
-                    android:id="@+id/textView8"
-                    android:paddingRight="10dp"
                     android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:text="المبلغ"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     />
             </LinearLayout>
             <TextView

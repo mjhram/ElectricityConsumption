@@ -2,8 +2,9 @@ package ac.mohammad.com.electricityconsumption;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
@@ -25,25 +26,21 @@ import java.util.Locale;
  * status bar and navigation/system bar) with user interaction.
  */
 public class GraphActivity extends AppCompatActivity {
+    GraphView graph1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_graph);
 
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        initGraph(graph);
+        graph1 = (GraphView) findViewById(R.id.graph);
+        initGraph();
     }
 
-    Date timestamp2date(long timestamp){
-        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-        cal.setTimeInMillis(timestamp);
-        return cal.getTime();
-    }
-    public void initGraph(final GraphView graph) {
+    public void initGraph(/*final GraphView graph*/) {
         int mLabels =3;
         databaseHandler dbHandler = new databaseHandler(this);
-        List<elec_info> values = dbHandler.getAllRecords(SortType.PrevDate);
+        List<elec_info> values = dbHandler.getAllRecords(SortType.PrevDate, "where isItBill=1");
         int mSize = values.size();
         DataPoint dp[] = new DataPoint[mSize];
         DataPoint price[] = new DataPoint[mSize];
@@ -52,41 +49,42 @@ public class GraphActivity extends AppCompatActivity {
         Date d1 = timestamp2date(values.get(mSize-1).prevDateInMilliSec);
         double maxPrice=1.0;
         for(int j=mSize-1, k=0; j>=0; j--, k++) {
+            double readings = values.get(j).nextReading-values.get(j).prevReading+1;
+            if(readings <= 0) continue;
+            long days = (values.get(j).nextDateInMilliSec - values.get(j).prevDateInMilliSec) /(1000*60*60*24);
+            if(days<=0) continue;
             Date dd = timestamp2date(values.get(j).prevDateInMilliSec);
             if(k==0) {
                 d1=dd;
             }
-            double readings = values.get(j).nextReading-values.get(j).prevReading+1;
-            long days = (values.get(j).nextDateInMilliSec - values.get(j).prevDateInMilliSec) /(1000*60*60*24);
             dp[k] =    new DataPoint(dd, readings*30/days);
             double thePrice = Double.parseDouble(values.get(j).price)*30.0/days;
             price[k] = new DataPoint(dd, thePrice);
             if(thePrice > maxPrice) maxPrice = thePrice;
-
         }
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dp);
         // enable scrolling
-        graph.getViewport().setScrollable(true);
+        graph1.getViewport().setScrollable(true);
         // enable scaling
-        graph.getViewport().setScalable(true);
+        graph1.getViewport().setScalable(true);
 
         series.setTitle(getString(R.string.avUnitsPerMonth));
         series.setColor(Color.BLUE);
         series.setDrawDataPoints(true);
-        graph.addSeries(series);
+        graph1.addSeries(series);
 
         LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(price);
         series2.setTitle("Min");
         series2.setColor(Color.RED);
         series2.setDrawDataPoints(true);
-        graph.getSecondScale().addSeries(series2);
-        graph.getSecondScale().setMinY(0);
-        graph.getSecondScale().setMaxY(maxPrice*1.1);
+        graph1.getSecondScale().addSeries(series2);
+        graph1.getSecondScale().setMinY(0);
+        graph1.getSecondScale().setMaxY(maxPrice*1.1);
         series2.setColor(Color.RED);
 
-        GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
-        graph.getSecondScale().setVerticalAxisTitle(getString(R.string.avPricePerMonth));
-        graph.getSecondScale().setVerticalAxisTitleColor(Color.RED);
+        GridLabelRenderer gridLabel = graph1.getGridLabelRenderer();
+        graph1.getSecondScale().setVerticalAxisTitle(getString(R.string.avPricePerMonth));
+        graph1.getSecondScale().setVerticalAxisTitleColor(Color.RED);
 
         gridLabel.setVerticalAxisTitle(getString(R.string.avUnitsPerMonth));
         //gridLabel.setVerticalLabelsSecondScaleColor(Color.RED);
@@ -97,7 +95,7 @@ public class GraphActivity extends AppCompatActivity {
                 Date d = new java.sql.Date((long) dataPoint.getX());
                 SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
                 String formatted = format1.format(d.getTime());
-                Toast.makeText(graph.getContext(), String.format("%s,   %.2f", formatted, dataPoint.getY()), Toast.LENGTH_LONG).show();
+                Toast.makeText(graph1.getContext(), String.format("%s,   %.2f", formatted, dataPoint.getY()), Toast.LENGTH_LONG).show();
             }
         });
         series2.setOnDataPointTapListener(new OnDataPointTapListener() {
@@ -106,20 +104,26 @@ public class GraphActivity extends AppCompatActivity {
                 Date d = new java.sql.Date((long) dataPoint.getX());
                 SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
                 String formatted = format1.format(d.getTime());
-                Toast.makeText(graph.getContext(), String.format("%s,   %.2f", formatted, dataPoint.getY()), Toast.LENGTH_LONG).show();
+                Toast.makeText(graph1.getContext(), String.format("%s,   %.2f", formatted, dataPoint.getY()), Toast.LENGTH_LONG).show();
             }
         });
 
-        gridLabel.setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()));
+        gridLabel.setLabelFormatter(new DateAsXAxisLabelFormatter(graph1.getContext()));
         gridLabel.setNumHorizontalLabels(mLabels);
 
         // set manual x bounds to have nice steps
-        graph.getViewport().setMinX(d1.getTime());
-        graph.getViewport().setMaxX(d2.getTime());
-        graph.getViewport().setXAxisBoundsManual(true);
+        graph1.getViewport().setMinX(d1.getTime());
+        graph1.getViewport().setMaxX(d2.getTime());
+        graph1.getViewport().setXAxisBoundsManual(true);
 
         // as we use dates as labels, the human rounding to nice readable numbers
         // is not nessecary
         gridLabel.setHumanRounding(false);
+    }
+
+    Date timestamp2date(long timestamp){
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(timestamp);
+        return cal.getTime();
     }
 }
