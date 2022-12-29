@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "ac.mohammad.com.electricityconsumption.app-mergeReleaseResources-13:/values-large-v4/values-large-v4.xml",
+            "outputFile": "ac.mohammad.com.electricityconsumption.app-mergeReleaseResources-27:/values-large-v4/values-large-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\a1ca1775adf5dcef2b5085e08f13b28d\\transformed\\appcompat-1.0.0\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\e8bfd5ef57b1d42d80e95bfe30d08fdf\\transformed\\appcompat-1.5.1\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",

@@ -1,4 +1,4 @@
-#Sun Dec 25 22:35:24 AST 2022
+#Thu Dec 29 15:59:52 AST 2022
 base.0=D\:\\0Dev\\Android\\ElectricityConsumption2021May7b-GraphView\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

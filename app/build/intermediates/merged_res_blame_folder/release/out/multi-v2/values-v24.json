@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "ac.mohammad.com.electricityconsumption.app-mergeReleaseResources-13:/values-v24/values-v24.xml",
+            "outputFile": "ac.mohammad.com.electricityconsumption.app-mergeReleaseResources-27:/values-v24/values-v24.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\a1ca1775adf5dcef2b5085e08f13b28d\\transformed\\appcompat-1.0.0\\res\\values-v24\\values-v24.xml",
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\e8bfd5ef57b1d42d80e95bfe30d08fdf\\transformed\\appcompat-1.5.1\\res\\values-v24\\values-v24.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\5de46585d4b7c7701fa0a5cc955843f8\\transformed\\media-1.0.0\\res\\values-v24\\values-v24.xml",
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\a60e9da74161afa2ea3a118183fea2ca\\transformed\\media-1.0.0\\res\\values-v24\\values-v24.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

@@ -1,44 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "ac.mohammad.com.electricityconsumption.app-mergeReleaseResources-13:/values-tr/values-tr.xml",
+            "outputFile": "ac.mohammad.com.electricityconsumption.app-mergeReleaseResources-27:/values-tr/values-tr.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\a1ca1775adf5dcef2b5085e08f13b28d\\transformed\\appcompat-1.0.0\\res\\values-tr\\values-tr.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,210,309,421,506,612,732,811,887,978,1071,1164,1258,1356,1449,1551,1646,1737,1828,1907,2014,2119,2215,2322,2424,2532,2688,2786",
-                        "endColumns": "104,98,111,84,105,119,78,75,90,92,92,93,97,92,101,94,90,90,78,106,104,95,106,101,107,155,97,78",
-                        "endOffsets": "205,304,416,501,607,727,806,882,973,1066,1159,1253,1351,1444,1546,1641,1732,1823,1902,2009,2114,2210,2317,2419,2527,2683,2781,2860"
-                    },
-                    "to": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,30",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,210,309,421,506,612,732,811,887,978,1071,1164,1258,1356,1449,1551,1646,1737,1828,1907,2014,2119,2215,2322,2424,2532,2688,2933",
-                        "endColumns": "104,98,111,84,105,119,78,75,90,92,92,93,97,92,101,94,90,90,78,106,104,95,106,101,107,155,97,78",
-                        "endOffsets": "205,304,416,501,607,727,806,882,973,1066,1159,1253,1351,1444,1546,1641,1732,1823,1902,2009,2114,2210,2317,2419,2527,2683,2781,3007"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\8c563985cc4c3ff7f7d9c8840766fec6\\transformed\\core-1.2.0\\res\\values-tr\\values-tr.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "31",
-                        "startColumns": "4",
-                        "startOffsets": "3012",
-                        "endColumns": "100",
-                        "endOffsets": "3108"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\3c6dcf19cee33eab7ae121bea7f75bba\\transformed\\jetified-play-services-basement-18.1.0\\res\\values-tr\\values.xml",
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\b3379c253ca4c6ac51adb03bfa81b724\\transformed\\jetified-play-services-basement-18.1.0\\res\\values-tr\\values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",
@@ -49,9 +15,43 @@
                     "to": {
                         "startLines": "29",
                         "startColumns": "4",
-                        "startOffsets": "2786",
+                        "startOffsets": "2797",
                         "endColumns": "146",
-                        "endOffsets": "2928"
+                        "endOffsets": "2939"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\804f335e2453e4cec0d0ef4cb76cd5ff\\transformed\\core-1.8.0\\res\\values-tr\\values-tr.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "31",
+                        "startColumns": "4",
+                        "startOffsets": "3024",
+                        "endColumns": "100",
+                        "endOffsets": "3120"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-3\\e8bfd5ef57b1d42d80e95bfe30d08fdf\\transformed\\appcompat-1.5.1\\res\\values-tr\\values-tr.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,219,318,430,515,621,741,821,896,987,1080,1172,1266,1366,1459,1561,1656,1747,1838,1917,2024,2128,2224,2331,2434,2543,2699,2797",
+                        "endColumns": "113,98,111,84,105,119,79,74,90,92,91,93,99,92,101,94,90,90,78,106,103,95,106,102,108,155,97,79",
+                        "endOffsets": "214,313,425,510,616,736,816,891,982,1075,1167,1261,1361,1454,1556,1651,1742,1833,1912,2019,2123,2219,2326,2429,2538,2694,2792,2872"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,30",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,219,318,430,515,621,741,821,896,987,1080,1172,1266,1366,1459,1561,1656,1747,1838,1917,2024,2128,2224,2331,2434,2543,2699,2944",
+                        "endColumns": "113,98,111,84,105,119,79,74,90,92,91,93,99,92,101,94,90,90,78,106,103,95,106,102,108,155,97,79",
+                        "endOffsets": "214,313,425,510,616,736,816,891,982,1075,1167,1261,1361,1454,1556,1651,1742,1833,1912,2019,2123,2219,2326,2429,2538,2694,2792,3019"
                     }
                 }
             ]

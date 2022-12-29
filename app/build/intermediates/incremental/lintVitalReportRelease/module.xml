@@ -4,7 +4,7 @@
     name=":app"
     type="APP"
     maven="ElectricityConsumption2021May7b-GraphView:app:"
-    gradle="7.3.0"
+    gradle="7.3.1"
     buildFolder="build"
     bootClassPath="D:\Android\sdk\platforms\android-33\android.jar;D:\Android\sdk\build-tools\30.0.3\core-lambda-stubs.jar"
     javaSourceLevel="1.8"
