@@ -52,13 +52,11 @@ public class MainActivity extends AppCompatActivity {
     public class PriceModelDateComparator implements Comparator<PriceModel>
     {
         public int compare(PriceModel left, PriceModel right) {
-            int res = (int)(right.appliedDate - left.appliedDate);
-            return res;
+            return (int)(right.appliedDate - left.appliedDate);
         }
     }
     long getUnitsPerPeriod(long unitsInMonth, double periodInDays) {
-        long res = Math.round(1.0 * unitsInMonth * periodInDays / 30.0);
-        return res;
+        return Math.round(1.0 * unitsInMonth * periodInDays / 30.0);
     }
 
     class PriceModel {
