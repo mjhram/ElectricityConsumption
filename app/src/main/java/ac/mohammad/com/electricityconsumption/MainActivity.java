@@ -1,8 +1,8 @@
 package ac.mohammad.com.electricityconsumption;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -22,11 +21,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 
 import com.obsez.android.lib.filechooser.ChooserDialog;
 
@@ -138,12 +140,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    static TextView selectedDateView, prevDateTextView, nextDateTextView,
+    TextView prevDateTextView, nextDateTextView,
             priceTextView, calcTextView, textViewUnits, textViewPeriod;
-    static Spinner spinneryn;
-    static CheckBox saveCheckBox;
-    static Button btnCalc;
-    static long prevDate, nextDate;
+    Spinner spinneryn;
+    CheckBox saveCheckBox;
+    //static Button btnCalc;
+    long prevDate, nextDate;
     EditText prevReadTextEdit, nextReadTextEdit;
     //int unitsPerMonthX2016 = 1000;
     //int unitsPerMonth = 500;
@@ -171,7 +173,10 @@ public class MainActivity extends AppCompatActivity {
                 importDbFromFile();
                 return true;
             case R.id.menu_graph:
-                showGraph();
+                showGraph(false);
+                return true;
+            case R.id.menu_graph_all:
+                showGraph(true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -179,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     DatePickerDialog picker;
+    ActivityResultLauncher<Intent> someActivityResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         dbHandler = new databaseHandler(this);
 
         saveCheckBox = (CheckBox) findViewById(R.id.checkBoxSave);
-        btnCalc = (Button) findViewById(R.id.buttonCalculate);
+        //btnCalc = (Button) findViewById(R.id.buttonCalculate);
         prevDateTextView = (TextView) findViewById(R.id.textViewPrevDate);
         nextDateTextView = (TextView) findViewById(R.id.textViewNextDate);
         textViewUnits = (TextView) findViewById(R.id.textViewUnits);
@@ -201,19 +207,62 @@ public class MainActivity extends AppCompatActivity {
         prevReadTextEdit = (EditText) findViewById(R.id.editTextPrevReading);
         nextReadTextEdit = (EditText) findViewById(R.id.editTextNextReading);
         init();
+        someActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result != null && result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent theIntent = result.getData();
+                            if(theIntent != null) {
+                                fillActivityFieldsFromList(theIntent);
+                            }
+                        }
+                    }
+                });
+
         prevDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar cldr = Calendar.getInstance();
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
+                final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+                c.setTimeInMillis(prevDate);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                int month = c.get(Calendar.MONTH);
+                int year = c.get(Calendar.YEAR);
                 // date picker dialog
                 picker = new DatePickerDialog(MainActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                prevDateTextView.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                            public void onDateSet(DatePicker view, int y, int m, int d) {
+                                c.set(y, m, d, 0, 0, 0);
+                                c.set(Calendar.MILLISECOND, 0);
+                                long msec = c.getTimeInMillis();
+                                prevDate = msec;
+                                showDate(prevDateTextView, msec);
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
+        nextDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+                c.setTimeInMillis(nextDate);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                int month = c.get(Calendar.MONTH);
+                int year = c.get(Calendar.YEAR);
+                // date picker dialog
+                picker = new DatePickerDialog(MainActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int y, int m, int d) {
+                                c.set(y, m, d, 0, 0, 0);
+                                c.set(Calendar.MILLISECOND, 0);
+                                long msec = c.getTimeInMillis();
+                                nextDate = msec;
+                                showDate(nextDateTextView, msec);
                             }
                         }, year, month, day);
                 picker.show();
@@ -252,12 +301,6 @@ public class MainActivity extends AppCompatActivity {
         //Collections.sort(priceModels, new PriceModelDateComparator());
         //load config
         loadSettings();
-    }
-
-    public void onPrevDateClicked(View v) {
-        selectedDateView = prevDateTextView;
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
     void setPriceModelsPeriods(long prevDate, long nextDate, int prevReading, int nextReading){
@@ -413,25 +456,26 @@ public class MainActivity extends AppCompatActivity {
         dbHandler.addRecord(eInfo);
     }
 
-    public void onSaveClicked (View v) {
-        /*elec_info eInfo = new elec_info();
+   /* public void onSaveClicked (View v) {
+        elec_info eInfo = new elec_info();
         eInfo.prevDateInMilliSec = prevDate;
         eInfo.nextDateInMilliSec = nextDate;
         eInfo.prevReading = Long.parseLong(prevReadTextEdit.getText().toString());
         eInfo.nextReading = Long.parseLong(nextReadTextEdit.getText().toString());
         eInfo.price = String.format("%.0f",getPrice(nextDate, prevDate));
         eInfo.calculationString = calculationStr;
-        dbHandler.addRecord(eInfo);*/
-    }
+        dbHandler.addRecord(eInfo);
+    }*/
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent theIntent)
     {
         super.onActivityResult(requestCode, resultCode, theIntent);
         // check if the request code is same as what is passed  here it is 2
         if(requestCode==2 && theIntent != null)
         {
-            elec_info eInfo = theIntent.getParcelableExtra("eInfo");
+            fillActivityFieldsFromList(theIntent);
+            /*elec_info eInfo = theIntent.getParcelableExtra("eInfo");
             prevDate = eInfo.prevDateInMilliSec;
             nextDate = eInfo.nextDateInMilliSec;
             showDate(prevDateTextView, prevDate);
@@ -446,20 +490,41 @@ public class MainActivity extends AppCompatActivity {
             spinneryn.setSelection(eInfo.isItBill==1?0:1);
             //btnCalc.performClick();
             //onCalculateClicked(MainActivity.this.getBaseContext());
+
+
+        }
+    }*/
+
+    void fillActivityFieldsFromList(Intent theIntent) {
+        elec_info eInfo = theIntent.getParcelableExtra("eInfo");
+        prevDate = eInfo.prevDateInMilliSec;
+        nextDate = eInfo.nextDateInMilliSec;
+        showDate(prevDateTextView, prevDate);
+        showDate(nextDateTextView, nextDate);
+
+        prevReadTextEdit.setText(Long.toString(eInfo.prevReading));
+        nextReadTextEdit.setText(Long.toString(eInfo.nextReading));
+        textViewUnits.setText("---");
+        textViewPeriod.setText("---");
+        priceTextView.setText("---");
+        calcTextView.setText("---");
+        spinneryn.setSelection(eInfo.isItBill==1?0:1);
+        //btnCalc.performClick();
+        //onCalculateClicked(MainActivity.this.getBaseContext());
             /*String message=data.getStringExtra("MESSAGE");
             textView1.setText(message);*/
-        }
     }
 
     public void onHistoryClicked(View aa) {
-        if(dbHandler.getRecordsCount() !=0) {
+        if(dbHandler.getRecordsCount("") !=0) {
             //local history instead of site history
             Intent myIntent = new Intent(MainActivity.this, InfoListActivity2.class);
-            MainActivity.this.startActivityForResult(myIntent,2);
+            someActivityResultLauncher.launch(myIntent);
+            //MainActivity.this.startActivityForResult(myIntent,2);
         } else {
             new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("History")
-                    .setMessage("There are no History records.")
+                    .setTitle("معلومة")
+                    .setMessage("لا توجد بيانات سابقة")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -470,15 +535,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void showGraph() {
-        if(dbHandler.getRecordsCount() !=0) {
+    void showGraph(boolean showAllRecords) {
+        if((showAllRecords && dbHandler.getRecordsCount("") !=0) ||
+                (showAllRecords==false && dbHandler.getRecordsCount("where isItBill=1") !=0)) {
             //local history instead of site history
             Intent myIntent = new Intent(MainActivity.this, GraphActivity.class);
+            myIntent.putExtra("isShowAll",showAllRecords);
             MainActivity.this.startActivity(myIntent);
         } else {
             new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Graph")
-                    .setMessage("There are no records to show.")
+                    .setTitle("معلومة")
+                    .setMessage("لا توجد بيانات سابقة")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -490,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    static long get2016Jan1inMSec() {
+    /*static long get2016Jan1inMSec() {
         final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         c.set(2016, 0, 1);
         long msec = c.getTimeInMillis();
@@ -498,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //String calculationStr = "";
-    /*private double getPrice(long nDate, long pDate) {
+    private double getPrice(long nDate, long pDate) {
         long periodInDays= (nDate -pDate)/(24*60*60*1000);
         int     prevReading = Integer.parseInt(prevReadTextEdit.getText().toString());
         int     nextReading = Integer.parseInt(nextReadTextEdit.getText().toString());
@@ -555,6 +622,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /*public void onPrevDateClicked(View v) {
+        selectedDateView = prevDateTextView;
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
     public void onNextDateClicked(View v) {
         selectedDateView = nextDateTextView;
         DialogFragment newFragment = new DatePickerFragment();
@@ -608,9 +681,9 @@ public class MainActivity extends AppCompatActivity {
             long msec = c.getTimeInMillis();
             showDate(selectedDateView, msec);
         }
-    };
+    };*/
 
-    static void showDate(TextView dateView, long msec) {
+    void showDate(TextView dateView, long msec) {
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         c.setTimeInMillis(msec);
         int day = c.get(Calendar.DAY_OF_MONTH);
@@ -631,6 +704,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST);
+            return;
         }
         new ChooserDialog().with(this)
                 .withStartFile(_path)
@@ -680,12 +754,23 @@ public class MainActivity extends AppCompatActivity {
         File currentDB = new File(data, currentDBPath);
         //File backupDB = new File(sd, backupDBPath);
         try {
+            dbHandler.close();
+            MainActivity.this.deleteDatabase(databaseHandler.DATABASE_NAME);
+            File dir = new File("/data/"+ tmp +"/databases/");
+            //String backupDBPath = getFileNameWithoutExtension(databaseHandler.DATABASE_NAME,"\\", ".");
+            //String extension = databaseHandler.DATABASE_NAME.substring(databaseHandler.DATABASE_NAME.lastIndexOf("."));
+            File file = new File(dir, databaseHandler.DATABASE_NAME+"-shm");
+            boolean b = file.delete();
+            file = new File(dir, databaseHandler.DATABASE_NAME+"-wal");
+            b = file.delete();
+
             source = new FileInputStream(backupDB).getChannel();
             destination = new FileOutputStream(currentDB).getChannel();
             long s = source.size();
             destination.transferFrom(source, 0, s);
             source.close();
             destination.close();
+
             Toast.makeText(this, "DB Imported!", Toast.LENGTH_LONG).show();
         } catch(IOException e) {
             e.printStackTrace();

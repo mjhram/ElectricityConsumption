@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class InfoListActivity2 extends AppCompatActivity{//ListActivity {
@@ -41,7 +42,7 @@ public class InfoListActivity2 extends AppCompatActivity{//ListActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_context, menu);
         super.onCreateContextMenu(menu, v, menuInfo);
-    };
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -85,52 +86,47 @@ public class InfoListActivity2 extends AppCompatActivity{//ListActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         MyInfoArrayAdapter2 adapter = (MyInfoArrayAdapter2)listView.getAdapter();
-        switch (item.getItemId()) {
-            /*case R.id.menu_addimage:
-                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                id = listView.getItemIdAtPosition(info.position);
+        List<elec_info> values;
+        //switch (item.getItemId())
+        if(item.getItemId()== R.id.menu_use) {
+            //case R.id.menu_use:
+            AdapterView.AdapterContextMenuInfo info;
+            elec_info eInfo;
+            long id;
+            info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            id = listView.getItemIdAtPosition(info.position);
 
-                eInfo = adapter.mobInfoArray.get((int)id);
+            eInfo = adapter.mobInfoArray.get((int) id);
 
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickPhoto.putExtra("eInfo", eInfo);
-                startActivityForResult(pickPhoto , 1);
-                break;*/
-            case R.id.menu_use:
-                AdapterView.AdapterContextMenuInfo info;
-                elec_info eInfo;
-                long id;
-                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                id = listView.getItemIdAtPosition(info.position);
-
-                eInfo = adapter.mobInfoArray.get((int)id);
-
-                Intent myIntent = new Intent(InfoListActivity2.this, MainActivity.class);
-                myIntent.putExtra("eInfo", eInfo);
-                setResult(2,myIntent);
-                finish();//finishing activity
-                break;
-            case R.id.menu_orderbyprevdate:
-                List<elec_info> values = dbHandler.getAllRecords(SortType.PrevDate);
-                //adapter.addAll(values);
-                adapter.setValues(values);
-                //setListAdapter(adapter);
-                //adapter.notifyDataSetChanged();
-                break;
-            case R.id.menu_orderbysavedate:
-                values = dbHandler.getAllRecords(SortType.SaveDate);
-                //adapter.addAll(values);
-                adapter.setValues(values);
-                //setListAdapter(adapter);
-                //adapter.notifyDataSetChanged();
-                break;
-            case R.id.menu_none:
+            Intent myIntent = new Intent(InfoListActivity2.this, MainActivity.class);
+            myIntent.putExtra("eInfo", eInfo);
+            setResult(RESULT_OK, myIntent);
+            finish();//finishing activity
+            //break;
+        } else if(item.getItemId()== R.id.menu_orderbyprevdate) {
+            //case R.id.menu_orderbyprevdate:
+            values = dbHandler.getAllRecords(SortType.PrevDate);
+            //adapter.addAll(values);
+            adapter.setValues(values);
+            //setListAdapter(adapter);
+            //adapter.notifyDataSetChanged();
+            //break;
+        } else if(item.getItemId()== R.id.menu_orderbysavedate) {
+            //case R.id.menu_orderbysavedate:
+            values = dbHandler.getAllRecords(SortType.SaveDate);
+            //adapter.addAll(values);
+            adapter.setValues(values);
+            //setListAdapter(adapter);
+            //adapter.notifyDataSetChanged();
+            //break;
+        } else if(item.getItemId()== R.id.menu_none) {
+            //case R.id.menu_none:
                 values = dbHandler.getAllRecords(SortType.None);
                 //adapter.addAll(values);
                 adapter.setValues(values);
                 //setListAdapter(adapter);
                 //adapter.notifyDataSetChanged();
-                break;
+                //break;
         }
         return true;
     }
@@ -174,7 +170,7 @@ public class InfoListActivity2 extends AppCompatActivity{//ListActivity {
     public void onLocationClick(View paramView)
     {
         String tmp = ((TextView) paramView).getText().toString();
-        String loc[] = tmp.split(",");
+        String[] loc = tmp.split(",");
         double lat = Double.parseDouble(loc[0]);
         double lon = Double.parseDouble(loc[1]);
 
@@ -188,7 +184,7 @@ public class InfoListActivity2 extends AppCompatActivity{//ListActivity {
 
 }
 
-enum SortType {PrevDate, SaveDate, None};
+enum SortType {PrevDate, SaveDate, None}
 /*
 class MyComparatorB implements Comparator<elec_info> {
     private SortType orderType;
@@ -227,7 +223,7 @@ class MyInfoArrayAdapter2 extends ArrayAdapter<elec_info> {
         TextView txt_tmp;
 
         LayoutInflater inflater = (LayoutInflater) theListActivity
-                .getSystemService(theListActivity.LAYOUT_INFLATER_SERVICE);
+                .getSystemService(InfoListActivity2.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.info_row_layout, parent, false);
         if(mobInfoArray.size() <= position) {
             showInfo(mobInfoArray.get(0), rowView);
@@ -238,16 +234,13 @@ class MyInfoArrayAdapter2 extends ArrayAdapter<elec_info> {
 
         Button delBtn = (Button) rowView.findViewById(R.id.btn_del);
 
-        delBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                //do something
-                theListActivity.dbHandler.delRecord(mobInfoArray.get(position));
-                mobInfoArray.remove(position); //or some other task
-                notifyDataSetChanged();
-
-            }
-        });        return rowView;
+        delBtn.setOnClickListener(v -> {
+            //do something
+            theListActivity.dbHandler.delRecord(mobInfoArray.get(position));
+            mobInfoArray.remove(position); //or some other task
+            notifyDataSetChanged();
+        });
+        return rowView;
     }
 
     private void showInfo(elec_info info, View rowView) {
@@ -258,21 +251,21 @@ class MyInfoArrayAdapter2 extends ArrayAdapter<elec_info> {
         txt_tmp = (TextView) rowView.findViewById(R.id.tvPrevDate);
         txt_tmp.setText(tmp);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvPrevReading);
-        txt_tmp.setText(String.format("%d", info.prevReading));
+        txt_tmp.setText(String.format(Locale.getDefault(),"%d", info.prevReading));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvNextDate);
         tmp = getDateString(info.nextDateInMilliSec);
         txt_tmp.setText(tmp);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvNextReading);
-        txt_tmp.setText(String.format("%d", info.nextReading));
+        txt_tmp.setText(String.format(Locale.getDefault(),"%d", info.nextReading));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvPrice);
         txt_tmp.setText(info.price);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvCalcString);
         txt_tmp.setText(info.calculationString);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvUnitsString);
-        txt_tmp.setText(String.format("%d", info.nextReading-info.prevReading));
+        txt_tmp.setText(String.format(Locale.getDefault(),"%d", info.nextReading-info.prevReading));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvDaysString);
         long days = (long) (1.0 * (info.nextDateInMilliSec - info.prevDateInMilliSec) /(1000*60*60*24));
-        txt_tmp.setText(String.format("%d", (int) days));
+        txt_tmp.setText(String.format(Locale.getDefault(),"%d", (int) days));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvIsItBillString);
         txt_tmp.setText(info.isItBill==1?"نعم":"لا");
 
@@ -289,14 +282,11 @@ class MyInfoArrayAdapter2 extends ArrayAdapter<elec_info> {
 
         SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
         Date currenTimeZone = (Date)calendar.getTime();
-        String date = sdf.format(currenTimeZone);
-
-        return date;
+        return sdf.format(currenTimeZone);
     }
 
     public void setValues(List<elec_info> listValues){
         mobInfoArray.clear();
-        mobInfoArray = null;
         mobInfoArray = listValues;
         clear();
         addAll(listValues);

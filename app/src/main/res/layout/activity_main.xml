@@ -1,30 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
-    tools:context="ac.mohammad.com.electricityconsumption.MainActivity">
 
-    <ScrollView
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:id="@+id/scrollView"
         android:fillViewport="true"
-        android:layout_above="@+id/layout1"
-        >
+        tools:context="ac.mohammad.com.electricityconsumption.MainActivity">
 
+    >
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right|end"
             >
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,18 +49,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
-                <ImageButton
-                    android:layout_width="44dp"
-                    android:layout_height="39dp"
-                    android:id="@+id/imageButtonPrevDate"
-                    android:src="@drawable/calendar_icon1"
-                    android:scaleType="fitXY"
-                    android:onClick="onPrevDateClicked"
-                    android:layout_gravity="right"
-
-                    android:layout_toLeftOf="@id/textViewPrevDate"
-                    android:layout_alignTop="@id/textViewPrevDate"
                     />
 
                 <TextView
@@ -165,18 +147,6 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     />
 
-                <ImageButton
-                    android:layout_width="44dp"
-                    android:layout_height="39dp"
-                    android:id="@+id/imageButtonNextReading"
-                    android:src="@drawable/calendar_icon1"
-                    android:scaleType="fitXY"
-                    android:onClick="onNextDateClicked"
-                    android:layout_gravity="right"
-
-                    android:layout_toLeftOf="@id/textViewNextDate"
-                    android:layout_alignTop="@id/textViewNextDate"
-                    />
 
 
 
@@ -196,21 +166,106 @@
                     android:text="القراءة"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     />
+
                 <EditText
+                    android:id="@+id/editTextNextReading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:ems="10"
-                    android:id="@+id/editTextNextReading"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:selectAllOnFocus="true"
-
                     android:layout_below="@id/textViewNextDate"
-                    android:layout_toLeftOf="@id/textViewNextReading"
                     android:layout_alignParentLeft="true"
-                    />
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/textViewNextReading"
+                    android:ems="10"
+
+                    android:gravity="right"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp"
+                    android:selectAllOnFocus="true" />
             </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                >
+                <Spinner
+                    android:id="@+id/spinneryn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:entries="@array/yesno_array"
+                    android:prompt="@string/select"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="ورقة كهرباء؟"
+                    android:minWidth="100dp"
+                    android:paddingRight="10dp"
+                    android:paddingEnd="10dp"
+                    />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/checkBoxSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="true"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:gravity="right"
+                android:minHeight="48dp"
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp"
+                android:text="خزن"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/layout1"
+                >
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    >
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="احسب المبلغ"
+                        android:id="@+id/buttonCalculate"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:onClick="onCalculateClicked"
+                        android:textSize="24dp"
+                        />
+
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+
+                </LinearLayout>
+
+            </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -312,110 +367,5 @@
                 android:paddingRight="10dp"
                 android:paddingEnd="10dp"
                 />
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                >
-                <Spinner
-                    android:id="@+id/spinneryn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:entries="@array/yesno_array"
-                    android:prompt="@string/select"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="ورقة كهرباء؟"
-                    android:minWidth="100dp"
-                    android:paddingRight="10dp"
-                    android:paddingEnd="10dp"
-                    />
-            </LinearLayout>
-            <CheckBox
-                android:id="@+id/checkBoxSave"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:button="@null"
-                android:checked="true"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:gravity="right"
-                android:paddingEnd="10dp"
-                android:paddingRight="10dp"
-                android:text="خزن"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
         </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/layout1"
-        >
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            >
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="احسب المبلغ"
-                android:id="@+id/buttonCalculate"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:onClick="onCalculateClicked"
-                android:textSize="24dp"
-                />
-
-            <Button
-                android:id="@+id/buttonSave"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_toEndOf="@+id/buttonCalculate"
-                android:layout_toRightOf="@+id/buttonCalculate"
-                android:layout_weight="1"
-                android:onClick="onSaveClicked"
-                android:text="خزن"
-                android:textSize="24dp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="عرض القراءات السابقة"
-            android:id="@+id/history"
-            android:layout_alignParentLeft="true"
-            android:onClick="onHistoryClicked"
-            android:textSize="24dp"
-            android:visibility="gone"
-            />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-</RelativeLayout>

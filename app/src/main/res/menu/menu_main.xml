@@ -12,4 +12,7 @@
     <item android:id="@+id/menu_graph"
         android:title="@string/menu_graph"
         />
+    <item android:id="@+id/menu_graph_all"
+        android:title="@string/menu_graph_all"
+        />
 </menu>

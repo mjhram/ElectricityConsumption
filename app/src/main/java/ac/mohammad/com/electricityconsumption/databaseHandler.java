@@ -56,8 +56,6 @@ public class databaseHandler extends SQLiteOpenHelper {
 
         if (oldVersion == 1 && newVersion == 2) {
             db.execSQL("ALTER TABLE " + TABLE_Units + " ADD COLUMN isItBill INTEGER DEFAULT 0");
-        } else {
-
         }
     }
 
@@ -97,9 +95,9 @@ public class databaseHandler extends SQLiteOpenHelper {
         return getAllRecords(sortType,"");
     }
     public List<elec_info> getAllRecords(SortType sortType, String filter) {
-        List<elec_info> cInfoList = new ArrayList<elec_info>();
+        List<elec_info> cInfoList = new ArrayList<>();
         // Select All Query
-        String orderStr ="";
+        String orderStr;
         if(sortType == SortType.PrevDate) {
             orderStr = " ORDER BY prevDateInMilliSec DESC";
         } else if(sortType == SortType.SaveDate) {
@@ -125,8 +123,8 @@ public class databaseHandler extends SQLiteOpenHelper {
     }
 
     // Getting contacts Count
-    public int getRecordsCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_Units;
+    public int getRecordsCount(String filter) {
+        String countQuery = "SELECT  * FROM " + TABLE_Units + " " + filter;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int count = cursor.getCount();
