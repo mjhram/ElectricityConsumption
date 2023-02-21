@@ -219,7 +219,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        prevDateTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    prevDateTextView.callOnClick();
+                }
+                else {
 
+                }
+            }
+        });
         prevDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,6 +251,17 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }, year, month, day);
                 picker.show();
+            }
+        });
+        nextDateTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    nextDateTextView.callOnClick();
+                }
+                else {
+
+                }
             }
         });
         nextDateTextView.setOnClickListener(new View.OnClickListener() {
@@ -371,9 +392,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCalculateClicked(View v) {
         {
-            int prevReading = Integer.parseInt(prevReadTextEdit.getText().toString());
+            //int prevReading = Integer.parseInt(prevReadTextEdit.getText().toString());
+            int prevReading = (int) Math.floor(Float.parseFloat(prevReadTextEdit.getText().toString()));
 
-            int nextReading = Integer.parseInt(nextReadTextEdit.getText().toString());
+            int nextReading = (int) Math.floor(Float.parseFloat(nextReadTextEdit.getText().toString()));
             setPriceModelsPeriods(prevDate, nextDate, prevReading, nextReading);
 
             //show the whole period and units:
@@ -435,8 +457,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong("PREV_DATE", prevDate);
         editor.putLong("NEXT_DATE", nextDate);
-        editor.putLong("PREV_READING", Long.parseLong(prevReadTextEdit.getText().toString()));
-        editor.putLong("NEXT_READING", Long.parseLong(nextReadTextEdit.getText().toString()));
+        editor.putLong("PREV_READING", (int) Math.floor(Float.parseFloat(prevReadTextEdit.getText().toString())));
+        //editor.putLong("PREV_READING", Long.parseLong(prevReadTextEdit.getText().toString()));
+        //editor.putLong("NEXT_READING", Long.parseLong(nextReadTextEdit.getText().toString()));
+        editor.putLong("NEXT_READING", (int) Math.floor(Float.parseFloat(nextReadTextEdit.getText().toString())));
         editor.putInt("ISIT_BILL", spinneryn.getSelectedItemPosition());
         editor.putBoolean("SAVE_VALUES", saveCheckBox.isChecked());
         editor.commit();
@@ -446,8 +470,8 @@ public class MainActivity extends AppCompatActivity {
         elec_info eInfo = new elec_info();
         eInfo.prevDateInMilliSec = prevDate;
         eInfo.nextDateInMilliSec = nextDate;
-        eInfo.prevReading = Long.parseLong(prevReadTextEdit.getText().toString());
-        eInfo.nextReading = Long.parseLong(nextReadTextEdit.getText().toString());
+        eInfo.prevReading = (long) Math.floor(Float.parseFloat(prevReadTextEdit.getText().toString()));
+        eInfo.nextReading = (long) Math.floor(Float.parseFloat(nextReadTextEdit.getText().toString()));
         eInfo.price = String.format("%.0f",price);
         eInfo.calculationString = calculationStr;
         eInfo.isItBill = spinneryn.getSelectedItemPosition()==0?1:0;
