@@ -475,6 +475,14 @@ public class MainActivity extends AppCompatActivity {
         eInfo.price = String.format("%.0f",price);
         eInfo.calculationString = calculationStr;
         eInfo.isItBill = spinneryn.getSelectedItemPosition()==0?1:0;
+        {
+            double readings = eInfo.nextReading - eInfo.prevReading + 1;
+            long days = (eInfo.nextDateInMilliSec - eInfo.prevDateInMilliSec) / (1000 * 60 * 60 * 24);
+            if(readings <=0 || days <=0) {
+                alert_dialog("البيانات ذات قيمة سالبة ولن يتم خزنها");
+                return;
+            }
+        }
         dbHandler.addRecord(eInfo);
     }
 
@@ -868,5 +876,18 @@ public class MainActivity extends AppCompatActivity {
                 fn = 0;
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    private void alert_dialog(final String message){
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("معلومة")
+                .setMessage(message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

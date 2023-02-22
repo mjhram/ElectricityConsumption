@@ -18,6 +18,7 @@ import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -80,8 +81,10 @@ public class GraphActivity extends AppCompatActivity {
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         } else {
-            DataPoint dp[] = new DataPoint[mSize];
-            DataPoint price[] = new DataPoint[mSize];
+            List<DataPoint> dpList = new ArrayList<>();
+            List<DataPoint> priceList = new ArrayList<>();
+            //DataPoint dp[] = new DataPoint[mSize];
+            //DataPoint price[] = new DataPoint[mSize];
 
             Date d2 = timestamp2date(values.get(0).prevDateInMilliSec);
             Date d1 = timestamp2date(values.get(mSize - 1).prevDateInMilliSec);
@@ -95,12 +98,21 @@ public class GraphActivity extends AppCompatActivity {
                 if (k == 0) {
                     d1 = dd;
                 }
-                dp[k] = new DataPoint(dd, readings * 30 / days);
+                //dp[k] = new DataPoint(dd, readings * 30 / days);
+                dpList.add(new DataPoint(dd, readings * 30 / days));
                 double thePrice = Double.parseDouble(values.get(j).price) * 30.0 / days;
-                price[k] = new DataPoint(dd, thePrice);
+                //price[k] = new DataPoint(dd, thePrice);
+                priceList.add(new DataPoint(dd, thePrice));
                 if (thePrice > maxPrice) maxPrice = thePrice;
             }
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dp);
+            if(dpList.size() <= 0 || priceList.size()<=0) {
+                return;
+            }
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
+            for (int i = 0; i < dpList.size(); i++) {
+                DataPoint point = dpList.get(i);
+                series.appendData(point, true, dpList.size());
+            }
             // enable scrolling
             graph1.getViewport().setScrollable(true);
             // enable scaling
@@ -111,7 +123,11 @@ public class GraphActivity extends AppCompatActivity {
             series.setDrawDataPoints(true);
             graph1.addSeries(series);
 
-            LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(price);
+            LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>();
+            for (int i = 0; i < priceList.size(); i++) {
+                DataPoint point = priceList.get(i);
+                series2.appendData(point, true, priceList.size());
+            }
             series2.setTitle("Min");
             series2.setColor(Color.RED);
             series2.setDrawDataPoints(true);
