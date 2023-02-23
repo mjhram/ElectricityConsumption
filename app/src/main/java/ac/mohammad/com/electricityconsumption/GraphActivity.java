@@ -100,7 +100,8 @@ public class GraphActivity extends AppCompatActivity {
                 }
                 //dp[k] = new DataPoint(dd, readings * 30 / days);
                 dpList.add(new DataPoint(dd, readings * 30 / days));
-                double thePrice = Double.parseDouble(values.get(j).price) * 30.0 / days;
+                //double thePrice = Double.parseDouble(values.get(j).price) * 30.0 / days;
+                double thePrice = values.get(j).pricenum * 30.0 / days;
                 //price[k] = new DataPoint(dd, thePrice);
                 priceList.add(new DataPoint(dd, thePrice));
                 if (thePrice > maxPrice) maxPrice = thePrice;
@@ -147,18 +148,18 @@ public class GraphActivity extends AppCompatActivity {
                 @Override
                 public void onTap(Series series, DataPointInterface dataPoint) {
                     Date d = new java.sql.Date((long) dataPoint.getX());
-                    SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
                     String formatted = format1.format(d.getTime());
-                    Toast.makeText(graph1.getContext(), String.format("%s,   %.2f", formatted, dataPoint.getY()), Toast.LENGTH_LONG).show();
+                    Toast.makeText(graph1.getContext(), String.format(Locale.ENGLISH,"%s,   %.2f", formatted, dataPoint.getY()), Toast.LENGTH_LONG).show();
                 }
             });
             series2.setOnDataPointTapListener(new OnDataPointTapListener() {
                 @Override
                 public void onTap(Series series, DataPointInterface dataPoint) {
                     Date d = new java.sql.Date((long) dataPoint.getX());
-                    SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
                     String formatted = format1.format(d.getTime());
-                    Toast.makeText(graph1.getContext(), String.format("%s,   %.2f", formatted, dataPoint.getY()), Toast.LENGTH_LONG).show();
+                    Toast.makeText(graph1.getContext(), String.format(Locale.ENGLISH,"%s,   %.2f", formatted, dataPoint.getY()), Toast.LENGTH_LONG).show();
                 }
             });
 

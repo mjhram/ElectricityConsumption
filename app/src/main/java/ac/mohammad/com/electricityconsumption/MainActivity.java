@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 //import io.fabric.sdk.android.Fabric;
@@ -392,17 +393,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCalculateClicked(View v) {
         {
-            //int prevReading = Integer.parseInt(prevReadTextEdit.getText().toString());
-            int prevReading = (int) Math.floor(Float.parseFloat(prevReadTextEdit.getText().toString()));
+            int prevReading=0;
+            int nextReading=0;
 
-            int nextReading = (int) Math.floor(Float.parseFloat(nextReadTextEdit.getText().toString()));
+            try {
+                //int prevReading = Integer.parseInt(prevReadTextEdit.getText().toString());
+
+                prevReading = (int) Math.floor(Float.parseFloat(prevReadTextEdit.getText().toString()));
+
+                nextReading = (int) Math.floor(Float.parseFloat(nextReadTextEdit.getText().toString()));
+            } catch(NumberFormatException e) {
+                alert_dialog("تأكد من القيم المدخلة. يجب ادخال القراءة السابقة واللاحقة.");
+                return;
+            }
             setPriceModelsPeriods(prevDate, nextDate, prevReading, nextReading);
 
             //show the whole period and units:
             long periodInDays = (long) (1.0 * (nextDate - prevDate)/(24*60*60*1000));
             long readingDiff = nextReading - prevReading;
-            textViewUnits.setText(String.format("%d",readingDiff));
-            textViewPeriod.setText(String.format("%d", (int) periodInDays));
+            textViewUnits.setText(String.format(Locale.ENGLISH,"%d",readingDiff));
+            textViewPeriod.setText(String.format(Locale.ENGLISH,"%d", (int) periodInDays));
         }
         double price = 0;
         String calcString = "";
@@ -420,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        priceTextView.setText(String.format("%.0f",price));
+        priceTextView.setText(String.format(Locale.ENGLISH,"%.0f",price));
         calcTextView.setText(calcString);
 
         storeSettings();
@@ -472,14 +482,15 @@ public class MainActivity extends AppCompatActivity {
         eInfo.nextDateInMilliSec = nextDate;
         eInfo.prevReading = (long) Math.floor(Float.parseFloat(prevReadTextEdit.getText().toString()));
         eInfo.nextReading = (long) Math.floor(Float.parseFloat(nextReadTextEdit.getText().toString()));
-        eInfo.price = String.format("%.0f",price);
+        //eInfo.price = String.format("%.0f",price);
+        eInfo.pricenum = price;
         eInfo.calculationString = calculationStr;
         eInfo.isItBill = spinneryn.getSelectedItemPosition()==0?1:0;
         {
             double readings = eInfo.nextReading - eInfo.prevReading + 1;
             long days = (eInfo.nextDateInMilliSec - eInfo.prevDateInMilliSec) / (1000 * 60 * 60 * 24);
             if(readings <=0 || days <=0) {
-                alert_dialog("البيانات ذات قيمة سالبة ولن يتم خزنها");
+                alert_dialog("البيانات ذات قيمة سالبة اوصفر ولن يتم خزنها");
                 return;
             }
         }
@@ -751,12 +762,12 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    public static String getTime() {
+    public static String getformatedTime() {
         String timezone="GMT+3";
 
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone(timezone));
         Date date = c.getTime();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH);
         String strDate = df.format(date);
         return strDate;
     }
@@ -832,7 +843,7 @@ public class MainActivity extends AppCompatActivity {
         //String formatted = format1.format(currentTime.getTime());
 
         String backupDBPath = getFileNameWithoutExtension(databaseHandler.DATABASE_NAME,"\\", ".");
-        backupDBPath = backupDBPath + "_"+getTime();
+        backupDBPath = backupDBPath + "_"+getformatedTime();
         String extension = databaseHandler.DATABASE_NAME.substring(databaseHandler.DATABASE_NAME.lastIndexOf("."));
         backupDBPath = backupDBPath + extension;
         //String backupDBPath = databaseHandler.DATABASE_NAME;

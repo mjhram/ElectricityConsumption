@@ -7,10 +7,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * Created by mohammad.haider on 2/16/2015.
  */
@@ -22,7 +18,8 @@ public class elec_info implements Parcelable {
     public Long nextDateInMilliSec;
     public Long prevReading;
     public Long nextReading;
-    public String price;
+    //public String price;
+    public double pricenum;
     public String calculationString;
     public int isItBill;
 
@@ -35,7 +32,8 @@ public class elec_info implements Parcelable {
         dest.writeLong(nextDateInMilliSec);
         dest.writeLong(prevReading);
         dest.writeLong(nextReading);
-        dest.writeString(price);
+        //dest.writeString(price);
+        dest.writeDouble(pricenum);
         dest.writeString(calculationString);
         dest.writeInt(isItBill);
 
@@ -52,7 +50,8 @@ public class elec_info implements Parcelable {
         nextDateInMilliSec=in.readLong();
         prevReading=in.readLong();
         nextReading=in.readLong();
-        price = in.readString();
+        //price = in.readString();
+        pricenum = in.readDouble();
         calculationString = in.readString();
         isItBill = in.readInt();
     }
@@ -80,13 +79,13 @@ public class elec_info implements Parcelable {
     };
 
     //aFormat example = "EEE MMM d HH:mm:ss zz yyyy"
-    static public Date stringToDate(String aDate, String aFormat) {
+    /*static public Date stringToDate(String aDate, String aFormat) {
         if(aDate==null) return null;
         ParsePosition pos = new ParsePosition(0);
         SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
         Date stringDate = simpledateformat.parse(aDate, pos);
         return stringDate;
-    }
+    }*/
 
     static public elec_info getInfoFromRow(Cursor in) {
         elec_info tmpMobInfo = new elec_info();
@@ -97,7 +96,8 @@ public class elec_info implements Parcelable {
         tmpMobInfo.nextDateInMilliSec=in.getLong(in.getColumnIndexOrThrow("nextDateInMilliSec"));
         tmpMobInfo.prevReading=in.getLong(in.getColumnIndexOrThrow("prevReading"));
         tmpMobInfo.nextReading=in.getLong(in.getColumnIndexOrThrow("nextReading"));
-        tmpMobInfo.price=in.getString(in.getColumnIndexOrThrow("price"));
+        //tmpMobInfo.price=in.getString(in.getColumnIndexOrThrow("price"));
+        tmpMobInfo.pricenum=in.getDouble(in.getColumnIndexOrThrow("pricenum"));
         tmpMobInfo.calculationString=in.getString(in.getColumnIndexOrThrow("calcStr"));
         tmpMobInfo.isItBill=in.getInt(in.getColumnIndexOrThrow("isItBill"));
 
@@ -117,7 +117,8 @@ public class elec_info implements Parcelable {
         params.put("prevReading", tmp);
         tmp = nextReading.toString();
         params.put("nextReading", tmp);
-        params.put("price", price);
+        //params.put("price", price);
+        params.put("pricenum", pricenum);
         params.put("calcStr", calculationString);
         params.put("isItBill", isItBill);
         long tmpL =  db.insert(TABLE_Units, null, params);

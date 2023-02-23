@@ -15,7 +15,7 @@ import java.util.List;
 public class databaseHandler extends SQLiteOpenHelper {
     // All Static variables
     // Database
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "elecReadings.db";
     private static final String KEY_ID = "No";
 
@@ -31,13 +31,15 @@ public class databaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         {
             String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_Units + "("
-                    + "No INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                    + "No INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+                    + " time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                     + " prevDateInMilliSec bigint  DEFAULT 0,"
                     + " nextDateInMilliSec bigint  DEFAULT 0,"
                     + " prevReading int(11)  DEFAULT 0,"
                     + " nextReading int(11)  DEFAULT 0,"
                     + " isItBill int DEFAULT 0,"
                     + " price varchar(15)  DEFAULT 0,"
+                    + " pricenum real  DEFAULT 0.0,"
                     + " calcStr varchar(100)  DEFAULT NULL"
                     + ")";
             Log.d("Test", CREATE_TABLE);
@@ -54,8 +56,12 @@ public class databaseHandler extends SQLiteOpenHelper {
             // Create tables again
             onCreate(db);*/
 
-        if (oldVersion == 1 && newVersion == 2) {
+        if (oldVersion == 1 && newVersion >= 2) {
             db.execSQL("ALTER TABLE " + TABLE_Units + " ADD COLUMN isItBill INTEGER DEFAULT 0");
+        }
+        if (oldVersion != 3 && newVersion == 3) {
+            db.execSQL("ALTER TABLE " + TABLE_Units + " ADD COLUMN pricenum REAL  DEFAULT 0.0");
+            db.execSQL("UPDATE " + TABLE_Units + " SET pricenum = CAST(price as REAL)");
         }
     }
 

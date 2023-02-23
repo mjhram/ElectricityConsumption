@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -12,7 +11,6 @@
         android:fillViewport="true"
         tools:context="ac.mohammad.com.electricityconsumption.MainActivity">
 
-    >
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -32,8 +30,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="القراءة السابقة"
                     android:id="@+id/textViewPrevReadingTitle"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:background="@drawable/bg1_shape"
 
@@ -110,12 +107,31 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="right"
-                    android:layout_alignParentRight="true"
+                    android:gravity="start"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:id="@+id/nextReadingLayout"
+
                     >
 
+
+
+                    <TextView
+                        android:id="@+id/textViewNextReadingTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="0dp"
+                        android:text="القراءة اللاحقة"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:background="@drawable/bg1_shape"
+                        android:paddingEnd="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingStart="10dp"
+                        android:paddingLeft="10dp"
+                        />
                     <ImageButton
                         android:id="@+id/imageButtonMoveUp"
                         android:layout_width="44dp"
@@ -126,24 +142,6 @@
                         android:src="@drawable/move_up"
                         android:tooltipText="تسخ للقراءة السابقة"
                         />
-
-                    <TextView
-                        android:id="@+id/textViewNextReadingTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="10dp"
-                        android:text="القراءة اللاحقة"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:background="@drawable/bg1_shape"
-                        android:paddingEnd="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
-                        />
-
                 </LinearLayout>
 
                 <EditText
@@ -195,7 +193,8 @@
                     android:gravity="right"
                     android:inputType="number"
                     android:minHeight="48dp"
-                    android:selectAllOnFocus="true" />
+                    android:selectAllOnFocus="true"
+                    />
             </RelativeLayout>
             <View
                 android:layout_width="match_parent"

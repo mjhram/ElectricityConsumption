@@ -251,21 +251,21 @@ class MyInfoArrayAdapter2 extends ArrayAdapter<elec_info> {
         txt_tmp = (TextView) rowView.findViewById(R.id.tvPrevDate);
         txt_tmp.setText(tmp);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvPrevReading);
-        txt_tmp.setText(String.format(Locale.getDefault(),"%d", info.prevReading));
+        txt_tmp.setText(String.format(Locale.ENGLISH,"%d", info.prevReading));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvNextDate);
         tmp = getDateString(info.nextDateInMilliSec);
         txt_tmp.setText(tmp);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvNextReading);
-        txt_tmp.setText(String.format(Locale.getDefault(),"%d", info.nextReading));
+        txt_tmp.setText(String.format(Locale.ENGLISH,"%d", info.nextReading));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvPrice);
-        txt_tmp.setText(info.price);
+        txt_tmp.setText(String.format(Locale.ENGLISH,"%.0f", info.pricenum));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvCalcString);
         txt_tmp.setText(info.calculationString);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvUnitsString);
-        txt_tmp.setText(String.format(Locale.getDefault(),"%d", info.nextReading-info.prevReading));
+        txt_tmp.setText(String.format(Locale.ENGLISH,"%d", info.nextReading-info.prevReading));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvDaysString);
         long days = (long) (1.0 * (info.nextDateInMilliSec - info.prevDateInMilliSec) /(1000*60*60*24));
-        txt_tmp.setText(String.format(Locale.getDefault(),"%d", (int) days));
+        txt_tmp.setText(String.format(Locale.ENGLISH,"%d", (int) days));
         txt_tmp = (TextView) rowView.findViewById(R.id.tvIsItBillString);
         txt_tmp.setText(info.isItBill==1?"نعم":"لا");
 
@@ -280,9 +280,10 @@ class MyInfoArrayAdapter2 extends ArrayAdapter<elec_info> {
         calendar.setTimeInMillis(timestamp.getTime());
         calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
 
-        SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
-        Date currenTimeZone = (Date)calendar.getTime();
-        return sdf.format(currenTimeZone);
+        //SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH);
+        Date currenTime = calendar.getTime();
+        return sdf.format(currenTime);
     }
 
     public void setValues(List<elec_info> listValues){
